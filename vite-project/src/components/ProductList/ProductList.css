@@ -1,0 +1,10 @@
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(200px, 1fr)
+  ); /* Chia đều cột */
+  gap: 16px;
+  padding: 20px;
+  justify-items: center;
+}
