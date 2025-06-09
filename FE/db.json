@@ -1,0 +1,25 @@
+{
+    "cart": [
+        {
+            "id": 1,
+            "title": "Apple iPhone 14",
+            "price": 999.99,
+            "quantity": 2,
+            "image": "https://example.com/iphone14.jpg"
+        },
+        {
+            "id": 2,
+            "title": "Samsung Galaxy S22",
+            "price": 799.99,
+            "quantity": 1,
+            "image": "https://example.com/galaxyS22.jpg"
+        },
+        {
+            "id": 3,
+            "title": "Google Pixel 6",
+            "price": 599.99,
+            "quantity": 3,
+            "image": "https://example.com/pixel6.jpg"
+        }
+    ]
+}
