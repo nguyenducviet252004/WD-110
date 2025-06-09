@@ -27,10 +27,10 @@ return new class extends Migration
             $table->timestamps();
 
 
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories') ->onDelete('cascade');
 
 
-            $table->index('is_active');
+              $table->index('is_active', 'products_is_active_index');
         });
     }
 
