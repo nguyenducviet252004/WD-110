@@ -1,28 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
+import Header from './components/LayoutComponent/Header';
+import Footer from './components/LayoutComponent/Footer';
+import AppRoute from './router/Route';
 
-import "./App.css";
+const App = () => {
+  const [loading, setLoading] = useState(true);
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import CartItem from "./components/CartComponents/CartItem";
-import HomePage from "./pages/HomePage";
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
-
-function App() {
   return (
-      <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/cart" element={<CartItem />} />
-        {/* <Route path="/product-list" element={<ProductList />} />
-        <Route path="/product-detail/:id" element={<ProductDetail />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} /> */}
-</Routes>
-      </BrowserRouter>
-     
-   
+    <div>
+      {loading ? (
+        <div id="preloader-active">
+          <div className="preloader d-flex align-items-center justify-content-center">
+            <div className="preloader-inner position-relative">
+              <div className="page-loading text-center">
+                <div className="page-loading-inner">
+                  <div />
+                  <div />
+                  <div />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <Header />
+          <main className="main">
+            <AppRoute />
+          </main>
+          <Footer />
+        </>
+      )}
+    </div>
   );
-}
+};
 
 export default App;
