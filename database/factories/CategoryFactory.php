@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,22 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
+        // name
+        // slug
+        // parent_id
         return [
-            //
+            'name'      => fake()->words(2, true),
+            'slug'      => fake()->slug(),
+            'parent_id' => null,
         ];
+    }
+
+    public function withParent()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'parent_id' => Category::factory()->create()->id,
+            ];
+        });
     }
 }
