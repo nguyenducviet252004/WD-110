@@ -9,8 +9,8 @@ return new class extends Migration
     public function up()
     {
        Schema::create('product_sizes', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name', 50)->unique();
+            $table->id();
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }

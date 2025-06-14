@@ -8,16 +8,16 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('product_colors', function (Blueprint $table) {
+        Schema::create('product_galleries', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('code');
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('product_colors');
+        Schema::dropIfExists('product_galleries');
     }
 };

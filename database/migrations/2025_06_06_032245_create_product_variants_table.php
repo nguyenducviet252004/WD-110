@@ -9,30 +9,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('product_variants', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('product_size_id');
-            $table->unsignedBigInteger('product_color_id');
+            $table->id();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_size_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_color_id')->constrained()->cascadeOnDelete();
             $table->unsignedInteger('quantity')->default(0);
-            $table->string('image', 255)->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
 
             $table->unique(['product_id', 'product_size_id', 'product_color_id'], 'product_variants_unique');
-
-            $table->foreign('product_id')
-                  ->references('id')
-                  ->on('products')
-                  ->onDelete('cascade');
-
-            $table->foreign('product_size_id')
-                  ->references('id')
-                  ->on('product_sizes')
-                  ->onDelete('cascade');
-
-            $table->foreign('product_color_id')
-                  ->references('id')
-                  ->on('product_colors')
-                  ->onDelete('cascade');
         });
     }
 
