@@ -1,0 +1,203 @@
+/* Reset và layout cơ bản */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fff;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.cart-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  display: flex;
+  gap: 20px;
+  padding: 0 20px;
+}
+
+/* ========== BÊN TRÁI: GIỎ HÀNG ========== */
+.cart-left {
+  flex: 2;
+  border: 1px solid #eee;
+  padding: 20px;
+  background-color: #d6d6d6;
+}
+
+.cart-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+}
+
+.item-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.item-info {
+  flex: 2;
+}
+
+.item-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.item-price {
+  color: #888;
+  margin-top: 4px;
+}
+
+.item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.item-quantity button {
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.item-quantity input {
+  width: 40px;
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 4px;
+}
+
+.item-total {
+  flex: 1;
+  text-align: right;
+  font-weight: bold;
+}
+
+/* Mã giảm giá */
+.cart-discount {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  color: #333;
+}
+
+.cart-discount input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  color:#333;
+  border: 1px solid #ddd;
+}
+
+.cart-discount button {
+  padding: 10px 16px;
+  background: #332f2f;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ========== BÊN PHẢI: THÔNG TIN ĐƠN HÀNG ========== */
+.cart-right {
+  flex: 1;
+  border: 1px solid #eee;
+  padding: 20px;
+  background-color: #fff;
+  height: fit-content;
+}
+
+.cart-right h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.order-summary p {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.address-form input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.address-form button {
+  margin-top: 10px;
+  width: 100%;
+  background-color: #c2bfbf;
+  border: none;
+  padding: 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.order-total {
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Thanh toán */
+.checkout-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  border-radius: 20px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+/* Lưu Địa Chỉ */
+.save-address{
+flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  color:#333;
+  border: 1px solid #521818;
+  background: #000;
+}
+/* Loading / Error */
+.loading,
+.error {
+  text-align: center;
+  font-size: 18px;
+  color: #999;
+  padding: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cart-container {
+    flex-direction: column;
+  }
+
+  .item-total {
+    text-align: left;
+    margin-top: 8px;
+  }
+}
