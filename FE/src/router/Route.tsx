@@ -11,6 +11,10 @@ import CartPage from "../pages/user/CartPage";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import Home from "../Layout/user/Home/Home";
 import AdminLayout from "../Layout/admin/AdminLayout";
+import AdminUsers from "../pages/admin/AdminUser";
+import AdminColors from "../pages/admin/AdminColor";
+import AdminSizes from "../pages/admin/AdminSize";
+import AdminCategories from "../pages/admin/AdminCagetories";
 
 function App() {
   return (
@@ -27,10 +31,15 @@ function App() {
        </Route>
 
         {/* Admin routes */}
-        <Route element={<AdminLayout />}>
-          <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/color" element={<AdminColors />} />
+          <Route path="/admin/size" element={<AdminSizes />} />
+          <Route path="/admin/user" element={<AdminUsers />} />
+          <Route path="/admin/cagetories" element={<AdminCategories />} />
         </Route>
       </Routes>
     </Router>

@@ -14,7 +14,6 @@ export default function AdminDashboard() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Gọi API lấy thống kê tổng quan
     axios.get("http://127.0.0.1:8000/api/admin/dashboard")
       .then(res => {
         setStats(res.data);
@@ -38,7 +37,6 @@ export default function AdminDashboard() {
         <li>Tổng người dùng: {stats?.totalUsers}</li>
         <li>Tổng doanh thu: {stats?.totalRevenue?.toLocaleString()}₫</li>
       </ul>
-      {/* Có thể bổ sung thêm biểu đồ, danh sách đơn hàng mới, sản phẩm bán chạy... */}
     </div>
   );
 }

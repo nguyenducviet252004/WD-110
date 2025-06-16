@@ -7,7 +7,6 @@ interface Order {
   total: number;
   status: string;
   created_at: string;
-  // Thêm các trường khác nếu cần
 }
 
 export default function AdminOrders() {
@@ -15,7 +14,6 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Lấy danh sách đơn hàng khi trang được mở
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/api/orders")
       .then(res => {
@@ -28,7 +26,6 @@ export default function AdminOrders() {
       });
   }, []);
 
-  // Hàm cập nhật trạng thái đơn hàng
   const handleUpdateStatus = (id: number, newStatus: string) => {
     axios.put(`http://127.0.0.1:8000/api/orders/${id}`, { status: newStatus })
       .then(() => {
@@ -36,9 +33,7 @@ export default function AdminOrders() {
           order.id === id ? { ...order, status: newStatus } : order
         ));
       })
-      .catch(() => {
-        alert("Cập nhật trạng thái thất bại!");
-      });
+      .catch(() => alert("Cập nhật trạng thái thất bại!"));
   };
 
   if (loading) return <div>Đang tải...</div>;
@@ -73,7 +68,6 @@ export default function AdminOrders() {
                 <button onClick={() => handleUpdateStatus(order.id, "Đã giao")}>
                   Đã giao
                 </button>
-                {/* Thêm các nút khác nếu cần */}
               </td>
             </tr>
           ))}

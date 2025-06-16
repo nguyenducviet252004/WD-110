@@ -5,7 +5,6 @@ interface Product {
   id: number;
   name: string;
   price: number;
-  // Thêm các trường khác nếu cần
 }
 
 export default function AdminProducts() {
@@ -13,7 +12,7 @@ export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Lấy danh sách sản phẩm khi trang được mở
+  // Lấy danh sách sản phẩm
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/api/products")
       .then(res => {
@@ -26,16 +25,12 @@ export default function AdminProducts() {
       });
   }, []);
 
-  // Hàm xóa sản phẩm
+  // Xóa sản phẩm
   const handleDelete = (id: number) => {
     if (!window.confirm("Bạn chắc chắn muốn xóa sản phẩm này?")) return;
     axios.delete(`http://127.0.0.1:8000/api/products/${id}`)
-      .then(() => {
-        setProducts(products.filter(p => p.id !== id));
-      })
-      .catch(() => {
-        alert("Xóa sản phẩm thất bại!");
-      });
+      .then(() => setProducts(products.filter(p => p.id !== id)))
+      .catch(() => alert("Xóa sản phẩm thất bại!"));
   };
 
   if (loading) return <div>Đang tải...</div>;
@@ -67,7 +62,7 @@ export default function AdminProducts() {
           ))}
         </tbody>
       </table>
-      {/* Thêm form thêm sản phẩm nếu muốn */}
+      {/* Thêm form thêm/sửa sản phẩm nếu muốn */}
     </div>
   );
 }
