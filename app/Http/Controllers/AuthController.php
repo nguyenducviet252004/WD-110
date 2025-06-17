@@ -5,51 +5,47 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
-    // Đăng ký
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        $data = $request->validated();
 
         $user = User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            'password' => Hash::make($data['password']),
         ]);
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json(['user' => $user, 'token' => $token], 201);
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ], 201);
     }
 
-    // Đăng nhập
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
+        $data = $request->validated();
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $data['email'])->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Thông tin đăng nhập không chính xác.'],
-            ]);
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
+            return response()->json(['message' => 'Email hoặc mật khẩu không chính xác.'], 401);
         }
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json(['user' => $user, 'token' => $token]);
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ]);
     }
 
-    // Đăng xuất
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

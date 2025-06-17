@@ -42,6 +42,9 @@ Route::prefix('variants')->group(function () {
     Route::post('/sizes', [ProductVariantController::class, 'storeSize']);
 });
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+});
+
