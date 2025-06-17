@@ -10,7 +10,7 @@ use App\Models\ProductColor;
 class DatabaseSeeder extends Seeder
 {
     public function run()
-    {php
+    {
         // Seed categories
         if (!Category::where('slug', 'clothing')->exists()) {
             Category::create(['name' => 'Clothing', 'slug' => 'clothing', 'status' => 1, 'is_active' => 1]);
