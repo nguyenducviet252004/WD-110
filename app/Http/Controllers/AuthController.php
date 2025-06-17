@@ -13,36 +13,40 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $data = $request->validated();
-
         $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'role' => 'member'
         ]);
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Đăng ký thành công!',
             'user' => $user,
-            'token' => $token,
-        ], 201);
+            'token' => $token
+        ]);
     }
 
     public function login(LoginRequest $request)
     {
-        $data = $request->validated();
+        $credentials = $request->validated();
 
-        $user = User::where('email', $data['email'])->first();
+        $user = User::where('email', $credentials['email'])->first();
 
-        if (! $user || ! Hash::check($data['password'], $user->password)) {
-            return response()->json(['message' => 'Email hoặc mật khẩu không chính xác.'], 401);
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['Email hoặc mật khẩu không đúng.'],
+            ]);
         }
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Đăng nhập thành công!',
             'user' => $user,
-            'token' => $token,
+            'token' => $token
         ]);
     }
 
@@ -50,6 +54,6 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Đăng xuất thành công']);
+        return response()->json(['message' => 'Đăng xuất thành công!']);
     }
 }

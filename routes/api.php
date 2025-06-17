@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProductVariantController;
 use App\Http\Controllers\AuthController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -48,3 +49,10 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 });
 
+Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin/dashboard', function () {
+    return response()->json(['message' => 'Chào Admin!']);
+});
+
+Route::middleware(['auth:sanctum', 'role:member'])->get('/user/profile', function () {
+    return response()->json(auth()->user());
+});

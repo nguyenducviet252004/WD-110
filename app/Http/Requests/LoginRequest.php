@@ -15,16 +15,16 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required|string',
+            'password' => 'required',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Email không đúng định dạng.',
-            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'email.required' => 'Email là bắt buộc.',
+            'password.required' => 'Mật khẩu là bắt buộc.',
         ];
     }
 }
+
