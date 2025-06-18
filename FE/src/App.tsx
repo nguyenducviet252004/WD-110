@@ -1,16 +1,35 @@
 import React from "react";
-import Header from "./components/user/LayoutComponent/Header";
-import Footer from "./components/user/LayoutComponent/Footer";
-import AppRoute from "./router/Route";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import ShopPage from "./Layout/ShopPage";
+import BlogPage from "./Layout/BlogPage";
+import AboutPage from "./Layout/AboutPage";
+import ContactPage from "./Layout/ContactPage";
+import CheckoutPage from "./Layout/CheckoutPage";
+import ProductsAdmin from "./components/Admin/Products/ProductsAdmin";
+import CreateProducts from "./components/Admin/Products/CreateProducts";
+import EditProducts from "./components/Admin/Products/EditProducts";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <Header />
-      <AppRoute />
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/shop" element={<ShopPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/admin/products" element={<ProductsAdmin />} />
+        <Route path="/admin/create" element={<CreateProducts />} />
+        <Route path="/admin/edit/:id" element={<EditProducts />} />
+        {/* Uncomment these routes when the components are ready */}
+        {/* <Route path="/admin/categories" element={<div>Categories Admin</div>} />
+        {/* <Route path="/admin/orders" element={<div>Orders Admin</div>} />
+        <Route path="/admin/users" element={<div>Users Admin</div>} /> */}
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;

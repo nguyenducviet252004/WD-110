@@ -2,21 +2,38 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Category;
+use App\Models\ProductSize;
+use App\Models\ProductColor;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        // Seed categories
+        if (!Category::where('slug', 'clothing')->exists()) {
+            Category::create(['name' => 'Clothing', 'slug' => 'clothing', 'status' => 1, 'is_active' => 1]);
+        }
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Seed sizes
+        $sizes = ['S', 'M', 'L'];
+        foreach ($sizes as $size) {
+            if (!ProductSize::where('name', $size)->exists()) {
+                ProductSize::create(['name' => $size]);
+            }
+        }
+
+        // Seed colors
+        $colors = [
+            ['name' => 'Red', 'code' => '#FF0000'],
+            ['name' => 'Blue', 'code' => '#0000FF'],
+            ['name' => 'Green', 'code' => '#00FF00']
+        ];
+        foreach ($colors as $color) {
+            if (!ProductColor::where('name', $color['name'])->exists()) {
+                ProductColor::create($color);
+            }
+        }
     }
 }

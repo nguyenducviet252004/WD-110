@@ -1,47 +1,136 @@
 {
-    "cart": [
-        {
-            "id": 1,
-            "title": "Apple iPhone 14",
-            "price": 999.99,
-            "quantity": 2,
-            "image": "https://example.com/iphone14.jpg"
-        },
-        {
-            "id": 2,
-            "title": "Samsung Galaxy S22",
-            "price": 799.99,
-            "quantity": 1,
-            "image": "https://example.com/galaxyS22.jpg"
-        },
-        {
-            "id": 3,
-            "title": "Google Pixel 6",
-            "price": 599.99,
-            "quantity": 3,
-            "image": "https://example.com/pixel6.jpg"
-        }
-    ],
-    "products": [
-        {
-            "id": 1,
-            "title": "Apple iPhone 14",
-            "price": 999.99,
-            "image": "https://example.com/iphone14.jpg"
-        },
-        {
-            "id": 2,
-            "title": "Samsung Galaxy S22",
-            "price": 799.99,
-            "image": "https://example.com/galaxyS22.jpg"
-        },
-        {
-            "id": 3,
-            "title": "Google Pixel 6",
-            "price": 599.99,
-            "image": "https://example.com/pixel6.jpg"
-        }
-    ]
+  "cart": [
+    {
+      "id": "1",
+      "title": "Apple iPhone 14",
+      "price": 999.99,
+      "quantity": 2,
+      "image": "https://example.com/iphone14.jpg"
+    },
+    {
+      "id": "2",
+      "title": "Samsung Galaxy S22",
+      "price": 799.99,
+      "quantity": 1,
+      "image": "https://example.com/galaxyS22.jpg"
+    },
+    {
+      "id": "3",
+      "title": "Google Pixel 6",
+      "price": 599.99,
+      "quantity": 3,
+      "image": "https://example.com/pixel6.jpg"
+    }
+  ],
+  "categories": [
+    { "id": 1, "name": "Thời trang nam" },
+    { "id": 2, "name": "Thời trang nữ" },
+    { "id": 3, "name": "Giày dép" }],
     
+  "products": [
+    {
+      "id": "1",
+      "name": "Tin tức",
+      "price_regular": 12213,
+      "description": "gôd",
+      "thumb_image": "null",
+      "category": "Áo",
+      "slug": "Slug",
+      "sku": "Sku",
+      "content": "G",
+      "views": 0,
+      "created_at": "2025-06-18T14:52:00.989Z"
+    },
+    {
+      "id": "2",
+      "name": "index.php",
+      "price_regular": 213,
+      "description": "123",
+      "thumb_image": "123",
+      "category": "123",
+      "slug": "123",
+      "sku": "123",
+      "content": "123",
+      "views": 0,
+      "created_at": "2025-06-18T14:53:01.349Z"
+    },
+    {
+      "id": "3",
+      "name": "ádasdad",
+      "price_regular": 123123,
+      "description": "dăd",
+      "thumb_image": "ădada",
+      "category": "dâdwdsa",
+      "slug": "ădasd",
+      "sku": "ădadaw",
+      "content": "dấdas",
+      "views": 0,
+      "created_at": "2025-06-18T14:53:21.672Z"
+    },
+    {
+      "id": "4",
+      "name": "123123",
+      "price_regular": 123123,
+      "description": "123123",
+      "thumb_image": "123123",
+      "category": "123123",
+      "slug": "123123",
+      "sku": "123123",
+      "content": "123123",
+      "views": 0,
+      "created_at": "2025-06-18T15:17:03.171Z"
+    },
+    {
+      "id": "5",
+      "name": "Tin tức",
+      "price_regular": 123123,
+      "description": "123123",
+      "thumb_image": "123123",
+      "category": "123123",
+      "slug": "123123",
+      "sku": "123123",
+      "content": "",
+      "views": 0,
+      "created_at": "2025-06-18T15:17:24.555Z"
+    },
+    {
+      "id": "6",
+      "name": "123123",
+      "price_regular": 123123,
+      "description": "123123",
+      "thumb_image": "123123",
+      "category": "123123",
+      "slug": "12312312",
+      "sku": "123123",
+      "content": "123123",
+      "views": 0,
+      "created_at": "2025-06-18T15:17:53.761Z"
+    },
+    {
+      "id": "75b9",
+      "name": "123123",
+      "price_regular": 123123,
+      "description": "123123",
+      "thumb_image": "123123",
+      "category": "123123",
+      "slug": "123123",
+      "sku": "123312",
+      "content": "",
+      "views": 0,
+      "created_at": "2025-06-18T15:22:42.486Z"
+    },
+    {
+      "id": "1750260191487",
+      "name": "tenlagi",
+      "price_regular": 123,
+      "description": "313",
+      "thumb_image": "123",
+      "category": "123123",
+      "slug": "12",
+      "sku": "3123123123",
+      "content": "",
+      "views": 0,
+      "created_at": "2025-06-18T15:23:11.487Z"
+    }
+  ]
 }
-
