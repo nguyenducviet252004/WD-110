@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProductVariantController;
 /*
@@ -18,6 +19,17 @@ use App\Http\Controllers\API\ProductVariantController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Category management routes
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::post('/', [CategoryController::class, 'store']);
+    Route::get('/{slug}', [CategoryController::class, 'show']);
+    Route::put('/{slug}', [CategoryController::class, 'update']);
+    Route::delete('/{slug}', [CategoryController::class, 'destroy']);
+    Route::get('/{slug}/products', [CategoryController::class, 'products']);
+});
+
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::post('/', [ProductController::class, 'store']);
