@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProductVariantController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,4 +56,12 @@ Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin/dashboard', funct
 
 Route::middleware(['auth:sanctum', 'role:member'])->get('/user/profile', function () {
     return response()->json(auth()->user());
+});
+
+Route::middleware('auth:sanctum')->prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index']);
+    Route::post('/add', [CartController::class, 'add']);
+    Route::put('/update/{id}', [CartController::class, 'update']);
+    Route::delete('/remove/{id}', [CartController::class, 'destroy']);
+    Route::delete('/clear', [CartController::class, 'clear']); // tuỳ chọn
 });
