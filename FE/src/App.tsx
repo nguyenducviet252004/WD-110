@@ -9,6 +9,7 @@ import CheckoutPage from "./Layout/CheckoutPage";
 import ProductsAdmin from "./components/Admin/Products/ProductsAdmin";
 import CreateProducts from "./components/Admin/Products/CreateProducts";
 import EditProducts from "./components/Admin/Products/EditProducts";
+import Cagetories from "./components/Admin/Cagetories/Cagetories";
 
 function App() {
   return (
@@ -23,8 +24,10 @@ function App() {
         <Route path="/admin/products" element={<ProductsAdmin />} />
         <Route path="/admin/create" element={<CreateProducts />} />
         <Route path="/admin/edit/:id" element={<EditProducts />} />
+        <Route path="/admin/categories" element={<Cagetories/>} />
+
         {/* Uncomment these routes when the components are ready */}
-        {/* <Route path="/admin/categories" element={<div>Categories Admin</div>} />
+
         {/* <Route path="/admin/orders" element={<div>Orders Admin</div>} />
         <Route path="/admin/users" element={<div>Users Admin</div>} /> */}
       </Routes>

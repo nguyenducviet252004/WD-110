@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import type { IProducts } from "../../../types/interface";
-import { createProductService } from "../../../servise/fetch";
+import { createProduct } from "../../../servise/productApi";
 
 const CreateProducts = () => {
-  const [products, setProducts] = useState<IProducts[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,11 +11,19 @@ const CreateProducts = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await createProductService.createProduct(data);
-      setProducts((prev) => [...prev, res]);
+      // Chuẩn bị FormData cho API backend
+      const formData = new FormData();
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
+      await createProduct(formData as unknown as IProducts);
       alert("Product created successfully");
-    } catch (error: any) {
-      setError(error.message || "Error creating product");
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Error creating product"
+      );
     } finally {
       setLoading(false);
     }
@@ -32,7 +39,6 @@ const CreateProducts = () => {
           e.preventDefault();
           const formData = new FormData(e.target as HTMLFormElement);
           const newProduct = {
-            id: Date.now(), // Temporary ID, replace with backend-generated ID
             name: formData.get("name") as string,
             price_regular: parseFloat(formData.get("price_regular") as string),
             description: formData.get("description") as string,
@@ -41,7 +47,7 @@ const CreateProducts = () => {
             slug: formData.get("slug") as string,
             sku: formData.get("sku") as string,
             content: formData.get("content") as string,
-            views: 0, // Default value
+            views: 0,
             created_at: new Date().toISOString(),
           };
           handleCreateProduct(newProduct);

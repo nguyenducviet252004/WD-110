@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { IProducts } from "../../../types/interface";
-import {
-  productByIdService,
-  updateProductService,
-} from "../../../servise/fetch";
+import { getProductById, updateProduct } from "../../../servise/productApi";
 
 const EditProducts = () => {
-  const { id } = useParams<{ id: number }>();
+  const { id } = useParams<{ id: string }>();
   const [form, setForm] = useState<IProducts | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,10 +15,12 @@ const EditProducts = () => {
       setError(null);
       try {
         if (!id) throw new Error("No product id");
-        const response = await productByIdService.getProdcutById(id);
+        const response = await getProductById(Number(id));
         setForm(response);
-      } catch (error: any) {
-        setError(error.message || "Error fetching product");
+      } catch (error) {
+        setError(
+          error instanceof Error ? error.message : "Error fetching product"
+        );
       } finally {
         setLoading(false);
       }
@@ -47,10 +46,19 @@ const EditProducts = () => {
     setLoading(true);
     setError(null);
     try {
-      await updateProductService.updateProducts(id, form);
+      // Chuẩn bị FormData cho API backend
+      const formData = new FormData();
+      Object.entries(form).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string | Blob);
+        }
+      });
+      await updateProduct(Number(id), formData as unknown as IProducts);
       alert("Product updated successfully");
-    } catch (error: any) {
-      setError(error.message || "Error updating product");
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Error updating product"
+      );
     } finally {
       setLoading(false);
     }
@@ -86,7 +94,7 @@ const EditProducts = () => {
           onChange={handleChange}
           placeholder="Description"
           required
-        />
+        ></textarea>
         <input
           type="text"
           name="thumb_image"
@@ -98,7 +106,11 @@ const EditProducts = () => {
         <input
           type="text"
           name="category"
-          value={form.category || ""}
+          value={
+            typeof form.category === "object"
+              ? form.category?.name || ""
+              : form.category || ""
+          }
           onChange={handleChange}
           placeholder="Category"
           required
@@ -125,6 +137,13 @@ const EditProducts = () => {
           onChange={handleChange}
           placeholder="Content"
         ></textarea>
+        <input
+          type="number"
+          name="views"
+          value={form.views || 0}
+          onChange={handleChange}
+          placeholder="Views"
+        />
         <button type="submit">Update Product</button>
       </form>
     </div>

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import type { IProducts } from "../../../types/interface";
-import { allProductsService } from "../../../servise/fetch";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
+import {
+  getAllProducts,
+  deleteProduct as deleteProductService,
+} from "../../../servise/productApi";
 
 const ProductsAdmin = () => {
   const [products, setProducts] = useState<IProducts[]>([]);
@@ -13,9 +16,9 @@ const ProductsAdmin = () => {
     const getAll = async () => {
       try {
         setLoading(true);
-        const response = await allProductsService.getAllProducts();
+        const response = await getAllProducts();
         setProducts(response);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch products");
       } finally {
         setLoading(false);
@@ -33,14 +36,11 @@ const ProductsAdmin = () => {
 
   const deleteProduct = async (id: number) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:3001/products/${id}`
-      );
-      if (response.status === 200) {
-        setProducts(products.filter((product: IProducts) => product.id !== id));
-      }
-    } catch (err) {
+      await deleteProductService(id);
+      setProducts(products.filter((product) => product.id !== id));
+    } catch {
       setError("Failed to delete product");
+      console.error("Failed to delete product");
     }
   };
 
@@ -84,7 +84,7 @@ const ProductsAdmin = () => {
               <td className="py-2 px-4 border-b">{product.id}</td>
               <td className="py-2 px-4 border-b">{product.name}</td>
               <td className="py-2 px-4 border-b">${product.price_regular}</td>
-              <td className="py-2 px-4 border-b">{product.category}</td>
+              <td className="py-2 px-4 border-b">{product.category?.name}</td>
               <td className="py-2 px-4 border-b">{product.slug}</td>
               <td className="py-2 px-4 border-b">{product.sku}</td>
               <td className="py-2 px-4 border-b">

@@ -23,9 +23,28 @@
     }
   ],
   "categories": [
-    { "id": 1, "name": "Thời trang nam" },
-    { "id": 2, "name": "Thời trang nữ" },
-    { "id": 3, "name": "Giày dép" }],
+ {
+      "id": 1,
+      "name": "Thời trang nam",
+      "slug": "thoi-trang-nam",
+      "description": "Các sản phẩm thời trang dành cho nam giới.",
+      "created_at": "2024-06-01T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Thời trang nữ",
+      "slug": "thoi-trang-nu",
+      "description": "Các sản phẩm thời trang dành cho nữ giới.",
+      "created_at": "2024-06-02T11:00:00Z"
+    },
+    {
+      "id": 3,
+      "name": "Giày dép",
+      "slug": "giay-dep",
+      "description": "Các loại giày dép cho mọi lứa tuổi.",
+      "created_at": "2024-06-03T12:00:00Z"
+    }
+    ],
     
   "products": [
     {
