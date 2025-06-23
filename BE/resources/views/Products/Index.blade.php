@@ -65,18 +65,17 @@
                         <th>Tên</th>
                         <th>Slug</th>
                         <th>SKU</th>
-                        <th>Danh mục</th>
+<th>Danh mục</th>
                         <th>Đại diện</th>
                         <th>Giá gốc</th>
                         <th>Giá KM</th>
-                        <th>Số lượng</th>
-                        <th>Bán</th>
+                        <th>Tổng số lượng</th>
                         <th>Lượt xem</th>
                         <th>Mô tả</th>
                         <th>Mô tả chi tiết</th>
                         <th>Thư viện</th>
-                        <th>Kích cỡ</th>
-                        <th>Màu sắc</th>
+                        <!-- <th>Kích cỡ</th>
+                        <th>Màu sắc</th> -->
                         <th>Thao tác</th>
                     </tr>
                 </thead>
@@ -95,45 +94,56 @@
                                 @endif
                             </td>
                             <td>
-                                <img src="{{ asset('storage/' . $item->thumb_image) }}" alt="{{ $item->name }}"
-                                    style="width: 40px; height: 30px; border-radius: 8px;">
+                                @if($item->thumb_image)
+                                    <img src="{{ $item->thumb_image }}" alt="{{ $item->name }}"
+                                        style="width: 40px; height: 30px; border-radius: 8px; object-fit: cover;">
+                                @else
+                                    <span class="text-muted">không có ảnh</span>
+                                @endif
                             </td>
                             <td>{{ number_format($item->price_regular) }} VND</td>
                             <td>{{ number_format($item->price_sale) }} VND</td>
-                            <td>{{ $item->quantity ?? '-' }}</td>
-                            <td>{{ $item->sell_quantity ?? '-' }}</td>
+                            <td>
+                                {{ $item->variants->sum('quantity') }}
+                            </td>
+                            <!-- <td>{{ $item->sell_quantity ?? '-' }}</td> -->
                             <td>{{ $item->views ?? 0 }}</td>
                             <td class="description" data-description="{{ $item->description }}">
                                 {{ Str::limit($item->description, 30) }}</td>
                             <td>{{ Str::limit($item->content, 30) }}</td>
                             <td>
-                                @if (isset($item->galleries) && $item->galleries->isNotEmpty())
-                                    <div class="d-flex flex-wrap gap-2">
-                                        @foreach ($item->galleries as $gallery)
-                                            <img src="{{ $gallery->image_path }}" alt="Gallery Image" class="gallery-image"
-                                                style="width: 40px; height: 30px; border-radius: 5px;">
-                                        @endforeach
-                                    </div>
-                                @else
+                                @php $hasGallery = false; @endphp
+                                @foreach ($item->variants as $variant)
+                                    @if (!empty($variant->image))
+                                        @php $hasGallery = true; @endphp
+                                        <img src="{{ asset('storage/' . $variant->image) }}" alt="Variant Image" class="gallery-image"
+                                            style="width: 40px; height: 30px; border-radius: 5px;">
+@endif
+                                @endforeach
+                                @if (!$hasGallery)
                                     không có ảnh
                                 @endif
                             </td>
-                            <td>
-                                @if (isset($item->sizes) && $item->sizes->isNotEmpty())
-                                    {{ $item->sizes->pluck('size')->implode(', ') }}
-                                @else
-                                    không có kích thước
-                                @endif
-                            </td>
-                            <td>
-                                @if (isset($item->colors) && $item->colors->isNotEmpty())
-                                    @foreach ($item->colors as $color)
-                                        <span>{{ $color->name_color }}</span>@if (!$loop->last), @endif
+                            <!-- <td>
+                                @php $sizes = $item->variants->pluck('size.size')->unique()->filter(); @endphp
+                                @if ($sizes->isNotEmpty())
+                                    @foreach ($sizes as $size)
+                                        <!-- <span class="badge bg-info text-dark" style="margin-right: 3px;">{{ $size }}</span>
                                     @endforeach
                                 @else
-                                    không có màu
+                                    <span class="text-muted">không có kích thước</span>
                                 @endif
                             </td>
+                            <td>
+                                @php $colors = $item->variants->pluck('color.name_color')->unique()->filter(); @endphp
+                                @if ($colors->isNotEmpty())
+                                    @foreach ($colors as $color)
+                                        <span class="badge bg-success text-light" style="margin-right: 3px;">{{ $color }}</span>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted">không có màu</span>
+                                @endif
+                            </td> --> -->
                             <td class="d-flex gap-2 justify-content-center">
                                 @if ($item->is_active == 1)
                                     <a href="{{ route('products.edit', $item->id) }}"
@@ -151,7 +161,7 @@
                                     <input type="hidden" name="product_id" value="{{ $item->id }}">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm"
                                         onclick="return confirm('Bạn có chắc muốn thay đổi trạng thái ẩn/hiển thị sản phẩm này?')">
-                                        {{ $item->is_active == 1 ? 'Ẩn' : 'Hiện' }}
+{{ $item->is_active == 1 ? 'Ẩn' : 'Hiện' }}
                                     </button>
                                 </form>
 
