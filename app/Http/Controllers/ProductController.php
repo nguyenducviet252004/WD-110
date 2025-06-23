@@ -104,7 +104,7 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'content' => $request->content,
                 'views' => 0,
-                'is_active' => $request->boolean('is_active', true),
+                'is_active' => $request->boolean('is_active', true)
             ]);
 
             // Tạo các biến thể
