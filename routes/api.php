@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProductVariantController;
+use App\Http\Controllers\API\OrderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
