@@ -59,9 +59,9 @@ Route::middleware(['auth:sanctum', 'role:member'])->get('/user/profile', functio
 });
 
 Route::middleware('auth:sanctum')->prefix('cart')->group(function () {
-    Route::get('/', [CartController::class, 'index']);
-    Route::post('/add', [CartController::class, 'add']);
-    Route::put('/update/{id}', [CartController::class, 'update']);
+    Route::get('/',               [CartController::class, 'index']);
+    Route::post('/add',           [CartController::class, 'add']);
+    Route::put('/update/{id}',    [CartController::class, 'update']);
     Route::delete('/remove/{id}', [CartController::class, 'destroy']);
-    Route::delete('/clear', [CartController::class, 'clear']); // tuỳ chọn
+    Route::delete('/clear',       [CartController::class, 'clear']);
 });

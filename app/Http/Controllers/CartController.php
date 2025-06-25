@@ -4,63 +4,75 @@ namespace App\Http\Controllers;
 
 use App\Models\CartItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    // Xem giỏ hàng
+    // GET /api/cart - Lấy danh sách giỏ hàng
     public function index()
     {
-        $cart = CartItem::with('product')
+        $items = CartItem::with('productVariant')
             ->where('user_id', auth()->id())
             ->get();
 
-        return response()->json($cart);
+        return response()->json($items);
     }
 
-    // Thêm sản phẩm vào giỏ
+    // POST /api/cart/add - Thêm sản phẩm vào giỏ
     public function add(Request $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1'
+        $data = $request->validate([
+            'product_variant_id' => 'required|exists:product_variants,id',
+            'quantity' => 'required|integer|min:1',
         ]);
 
-        $cart = CartItem::updateOrCreate(
-            [
-                'user_id' => auth()->id(),
-                'product_id' => $request->product_id
-            ],
-            [
-                'quantity' => DB::raw("quantity + {$request->quantity}")
-            ]
-        );
+        $item = CartItem::firstOrNew([
+            'user_id' => auth()->id(),
+            'product_variant_id' => $data['product_variant_id'],
+        ]);
 
-        return response()->json(['message' => 'Đã thêm vào giỏ hàng', 'cart' => $cart]);
+        $item->quantity += $data['quantity'];
+        $item->save();
+
+        return response()->json([
+            'message' => 'Đã thêm vào giỏ hàng',
+            'item' => $item,
+        ]);
     }
 
-    // Cập nhật số lượng sản phẩm
+    // PUT /api/cart/update/{id} - Cập nhật số lượng sản phẩm trong giỏ
     public function update(Request $request, $id)
     {
+        $data = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
         $item = CartItem::where('user_id', auth()->id())->findOrFail($id);
-        $request->validate(['quantity' => 'required|integer|min:1']);
+        $item->update(['quantity' => $data['quantity']]);
 
-        $item->update(['quantity' => $request->quantity]);
-
-        return response()->json(['message' => 'Cập nhật thành công']);
+        return response()->json([
+            'message' => 'Đã cập nhật giỏ hàng',
+            'item' => $item,
+        ]);
     }
 
-    // Xóa 1 sản phẩm khỏi giỏ
+    // DELETE /api/cart/remove/{id} - Xóa 1 sản phẩm trong giỏ
     public function destroy($id)
     {
-        CartItem::where('user_id', auth()->id())->where('id', $id)->delete();
-        return response()->json(['message' => 'Đã xóa khỏi giỏ hàng']);
+        $item = CartItem::where('user_id', auth()->id())->findOrFail($id);
+        $item->delete();
+
+        return response()->json([
+            'message' => 'Đã xóa sản phẩm khỏi giỏ hàng',
+        ]);
     }
 
-    // (Tuỳ chọn) Xoá toàn bộ giỏ
+    // DELETE /api/cart/clear - Xóa toàn bộ giỏ hàng
     public function clear()
     {
         CartItem::where('user_id', auth()->id())->delete();
-        return response()->json(['message' => 'Đã xóa toàn bộ giỏ hàng']);
+
+        return response()->json([
+            'message' => 'Đã xóa toàn bộ giỏ hàng',
+        ]);
     }
 }

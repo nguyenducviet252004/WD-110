@@ -6,10 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
 {
-    protected $fillable = ['user_id', 'product_id', 'quantity'];
+    protected $fillable = [
+        'user_id',
+        'product_variant_id',
+        'quantity',
+    ];
 
-    public function product()
+    /** Quan hệ tới User */
+    public function user()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(User::class);
+    }
+
+    /** Quan hệ tới ProductVariant */
+    public function productVariant()
+    {
+        return $this->belongsTo(ProductVariant::class);
     }
 }
+
