@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, string $role)
+    public function handle(Request $request, Closure $next, $role)
     {
-        $roles = explode('|', $role);
-        if (!$request->user() || !in_array($request->user()->role, $roles)) {
-            return response()->json(['message' => 'Không có quyền truy cập.'], 403);
+        if (auth()->check() && auth()->user()->role === $role) {
+            return $next($request);
         }
 
-        return $next($request);
+        return response()->json(['message' => 'Bạn không có quyền truy cập'], 403);
     }
 }
+

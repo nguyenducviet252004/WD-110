@@ -6,6 +6,7 @@ use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProductVariantController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,9 +48,17 @@ Route::prefix('variants')->group(function () {
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
-});
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/auth/logout', [AuthController::class, 'logout']);
 
+        Route::middleware('admin')->prefix('users')->group(function () {
+            Route::get('/', [UserController::class, 'index']);
+            Route::get('{id}', [UserController::class, 'show']);
+            Route::put('{id}', [UserController::class, 'update']);
+            Route::delete('{id}', [UserController::class, 'destroy']);
+        });
+    });
+});
 Route::middleware(['auth:sanctum', 'role:admin'])->get('/admin/dashboard', function () {
     return response()->json(['message' => 'Chào Admin!']);
 });
