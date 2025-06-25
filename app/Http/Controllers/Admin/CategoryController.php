@@ -16,23 +16,23 @@ class CategoryController extends Controller
             return redirect()->route('admin.categories.index', ['page' => $categories->lastPage()]);
         }
 
-        return view('categories.index', compact('categories'));
+        return view('admin.categories.index', compact('categories'));
 
     }
 
     public function create()
     {
-        return view('categories.create');
+        return view('admin.categories.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|unique:categories|max:255',
-            'slug' => 'nullable|max:190|unique:categories,slug',
-            'description' => 'nullable|string',
+            'slug' => 'required|max:190|unique:categories,slug',
+            'description' => 'required|string',
             'status' => 'boolean',
-            'is_active' => 'required|boolean',
+            'is_active' => 'boolean',
         ]);
 
         Category::create([
@@ -40,20 +40,20 @@ class CategoryController extends Controller
             'slug' => $request->slug,
             'description' => $request->description,
             'status' => $request->status,
-            'is_active' => 11,
+            'is_active' => 1,
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Thêm mới thành công');
+        return redirect()->route('admin.categories.index')->with('success', 'Thêm mới thành công');
     }
 
     public function show(Category $category)
     {
-        return view('categories.show', compact('category'));
+        return view('admin.categories.show', compact('category'));
     }
 
     public function edit(Category $category)
     {
-        return view('categories.edit', compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category)
@@ -62,10 +62,10 @@ class CategoryController extends Controller
             // Kiểm tra và validate input
             $request->validate([
                 'name' => 'required|unique:categories,name,' . $category->id . '|max:255',
-                'slug' => 'nullable|max:190|unique:categories,slug,' . $category->id,
-                'description' => 'nullable|string',
+                'slug' => 'required|max:190|unique:categories,slug,' . $category->id,
+                'description' => 'required|string',
                 'status' => 'boolean',
-                'is_active' => 'required|boolean',
+                'is_active' => 'boolean',
             ]);
 
             // Cập nhật danh mục
@@ -77,7 +77,7 @@ class CategoryController extends Controller
                 'is_active' => $request->is_active,
             ]);
 
-            return back()->with('success', 'Cập nhật thành công');
+            return redirect()->route('admin.categories.index')->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
             // Nếu có lỗi, trả về thông báo lỗi
             return back()->with('error', 'Có lỗi xảy ra khi cập nhật danh mục: ');
@@ -86,13 +86,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        if ($category->products()->count() > 0) {
-            return back()->with('error', 'Không thể xóa danh mục vì có sản phẩm liên quan.');
-        }
 
-        if ($category->blogs()->count() > 0) {
-            return back()->with('error', 'Không thể xóa danh mục vì có bài viết liên quan.');
-        }
 
         $category->delete();
 
