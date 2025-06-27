@@ -1,0 +1,38 @@
+.errors {
+    border: 2px solid red;
+    width: 30%;
+    border-left: 5px solid red;
+    border-radius: 6px;
+    text-align: center;
+    margin-top: 100px;
+    width: 600px;
+    height: 270px;
+  }
+  
+  .error {
+    display: flex;
+    justify-content: center;
+    margin: 200px 0px;
+  }
+  .text-error {
+    font-family: "Raleway";
+    font-size: 20px;
+    padding-top: 10px;
+    font-weight: 500;
+  }
+  
+  .text-succsess {
+    font-size: 16px;
+    font-family: "Raleway";
+  }
+  .icon-error {
+    border: 3px solid red;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    margin-bottom: 10px;
+  }
+  

@@ -1,0 +1,93 @@
+.rating{
+    border: 1px solid black;
+    width: 50%;
+}
+.warning-message{
+    border: 1px solid gold  !important;
+    border-left: 4px solid gold !important;
+}
+
+
+
+.check-quantity{
+    font-family: "Raleway";
+    font-size: 30px;
+}
+.comment{
+    width: 50%;
+    height: 10vw;
+}
+.button-review{
+    margin-top: 15px;
+   padding: 10px;
+}
+.rating{
+    margin-bottom: 20px;
+    font-family: "Raleway";
+    font-weight: 300;
+    font-size: 18px;
+ 
+}
+
+
+.css-button-add{
+    padding: 0px 20px;
+    font-size: 18px;
+    border: none;
+    background-color: rgb(159,134,217);
+    color: white;
+    font-family: "Raleway";
+}
+
+:where(.css-dev-only-do-not-override-142vneq).ant-pagination .ant-pagination-item-active{
+    border-color: blueviolet;
+    border: none;
+    color: white;
+    background: linear-gradient(to right,#673ab7, #af99d8);
+
+} 
+
+.css-button-add:hover{
+   opacity: 0.9;
+}
+:where(.css-dev-only-do-not-override-1x0dypw).ant-rate .ant-rate-star-half .ant-rate-star-first, :where(.css-dev-only-do-not-override-1x0dypw).ant-rate .ant-rate-star-full .ant-rate-star-second {
+    color: gold;
+}
+
+:where(.css-dev-only-do-not-override-1x0dypw).ant-notification .ant-notification-notice-wrapper .ant-notification-notice {
+    border: 1px solid rgb(82,196,26);
+    border-left: 4px solid rgb(82,196,26);
+}
+
+
+.img-rating{
+    border: 1px solid white;
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+   
+}
+
+.hr-rating{
+  border: 1px dotted grey;
+}
+
+.name-user{
+    font-family: "Raleway";
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.content-rating{
+    margin-top:  5px;
+    font-family: "Raleway";
+    font-size: 11px;
+}
+
+.layout-rating{
+    gap: 10px;
+    display: flex;
+    justify-content: start;
+  
+}

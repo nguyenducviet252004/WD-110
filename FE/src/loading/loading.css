@@ -1,0 +1,5 @@
+:where(.css-dev-only-do-not-override-142vneq).ant-spin-lg .ant-spin-dot,
+:where(.css-dev-only-do-not-override-142vneq).ant-spin-lg .ant-spin-dot-holder {
+  color: rgb(113, 81, 188);
+  font-size: 62px;
+}

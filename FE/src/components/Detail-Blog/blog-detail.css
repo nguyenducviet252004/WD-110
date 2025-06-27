@@ -1,0 +1,31 @@
+.container-detail-blog {
+  max-width: 980px;
+  width: 100%;
+  margin: auto;
+}
+
+.title-blog-detail {
+  font-size: 30px;
+  line-height: 40px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.hr-blog-detail {
+  width: 100%;
+}
+.content-blog-detail {
+  text-align: justify;
+  line-height: 30px;
+  font-size: 16px;
+}
+.des-blog-detail {
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 700;
+}
+
+.img-blog-detail {
+  margin: 30px 0px;
+  width: 100%;
+}

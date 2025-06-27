@@ -1,0 +1,25 @@
+.filter-color {
+  border: 1px solid rgb(205, 179, 225);
+  border-radius: 6px;
+}
+.list-sizes span {
+  border: 1px solid rgb(205, 179, 225);
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+.filter-color:hover {
+  box-shadow: 1px 1px rgb(205, 179, 225);
+}
+.list-sizes span:hover {
+  box-shadow: 1px 1px rgb(205, 179, 225);
+}
+.list-sizes span.active {
+  background-color: rgb(206, 167, 236);
+  color: white;
+}
+.list-color span.active{
+  background-color: rgb(206, 167, 236);
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+}

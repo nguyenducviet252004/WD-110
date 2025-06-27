@@ -1,0 +1,38 @@
+.thanks {
+  border: 2px solid rgb(82,196,26);
+  width: 30%;
+  border-left: 5px solid rgb(82,196,26);
+  border-radius: 6px;
+  text-align: center;
+  margin-top: 100px;
+  width: 600px;
+  height: 270px;
+}
+
+.thank {
+  display: flex;
+  justify-content: center;
+  margin: 200px 0px;
+}
+.text-thank {
+  font-family: "Raleway";
+  font-size: 20px;
+  padding-top: 10px;
+  font-weight: 500;
+}
+
+.text-succsess {
+  font-size: 16px;
+
+  font-family: "Raleway";
+}
+.icon-thank {
+  border: 3px solid rgb(82,196,26);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 50px;
+  margin-bottom: 10px;
+}

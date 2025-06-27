@@ -1,24 +1,47 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import ShopPage from "./Layout/ShopPage";
-import BlogPage from "./Layout/BlogPage";
-import AboutPage from "./Layout/AboutPage";
-import ContactPage from "./Layout/ContactPage";
-import CheckoutPage from "./Layout/CheckoutPage";
+import React, { useState, useEffect } from "react";
+import Header from "./components/LayoutComponent/Header";
+import Footer from "./components/LayoutComponent/Footer";
+import AppRoutes from "./Routes/Route";
+import SvgLoading from "./assets/imgs/template/favicon.svg";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/shop" element={<ShopPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/blog" element={<BlogPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      {loading && (
+        <div id="preloader-active">
+          <div className="preloader d-flex align-items-center justify-content-center">
+            <div className="preloader-inner position-relative">
+              <div className="page-loading text-center">
+                <div className="page-loading-inner">
+                  <div />
+                  <div />
+                  <div />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {!loading && (
+        <>
+          <Header />
+          <main className="main">
+            <AppRoutes />
+          </main>
+          <Footer />
+        </>
+      )}
+    </div>
   );
 }
 
