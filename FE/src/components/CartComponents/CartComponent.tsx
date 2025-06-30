@@ -73,7 +73,6 @@ const CartComponent: React.FC<CartProps> = ({ userId }) => {
     if (selectedColor && selectedSize) {
       updateVariant(isIdQuantity, selectedColor, selectedSize);
     } else {
-      
     }
   };
 
@@ -110,7 +109,7 @@ const CartComponent: React.FC<CartProps> = ({ userId }) => {
       await api.put(`/carts/${id}`, { quantity });
       getAllCart();
     } catch (error) {
-      message.error('Vượt quá số lượng có trong kho !')
+      message.error("Vượt quá số lượng có trong kho !");
     }
   };
 
@@ -432,20 +431,6 @@ const CartComponent: React.FC<CartProps> = ({ userId }) => {
               className="row"
               style={{ display: "flex", justifyContent: "end" }}
             >
-              {/* <div className="col-lg-5 mb-30">
-                <div className="box-form-discount">
-                  <div className="box-form-discount-inner">
-                    <input
-                      className="form-control"
-                      type="text"
-                      placeholder="Mã giảm giá"
-                      value={voucherCode}
-                      onChange={handleVoucherInputChange}
-                    />
-                   
-                  </div>
-                </div>
-              </div> */}
               {/* Phần tính tổng tiền giỏ hàng */}
               {isCart.length > 0 && (
                 <div className="col-lg-4 mb-30">
@@ -475,10 +460,6 @@ const CartComponent: React.FC<CartProps> = ({ userId }) => {
                       <span className="font-sm">Phí ship</span>
                       <span className="font-md-bold">Free</span>
                     </div>
-                    {/* <div className="item-total">
-                    <span className="font-sm">Estimate for</span>
-                    <span className="font-md-bold">United Kingdom</span>
-                  </div> */}
 
                     <div className="item-total border-0">
                       <span className="font-sm">Tổng tiền</span>

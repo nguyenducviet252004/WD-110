@@ -7,10 +7,10 @@ import axios from "axios";
 
 interface ProductListProps {
   filters: {
-    size: string | null;
-    color: string | null;
-    category: string | null;
-    priceRange: [number, number] | null;
+    size?: string | null;
+    color?: string | null;
+    category?: string | null;
+    priceRange?: [number, number] | null;
   };
 }
 

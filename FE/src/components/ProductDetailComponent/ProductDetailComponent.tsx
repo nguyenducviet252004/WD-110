@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-// import Star from "../../public/imgs/template/icons/star.svg";
+import Star from "../../public/imgs/template/icons/star.svg";
 import { useAppDispatch } from "../../Redux/store";
 import axios from "axios";
 import { notification } from "antd";
@@ -429,16 +429,6 @@ const ProductDetailComponent: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  {/* <div className="box-product-tag d-flex justify-content-between align-items-end">
-                                        <div className="box-tag-left">
-                                            <p className="font-xs mb-5"><span className="neutral-500">SKU:</span><span className="neutral-900">kid1232568-UYV</span></p>
-                                            <p className="font-xs mb-5"><span className="neutral-500">Categories:</span><span className="neutral-900">Girls, Dress</span></p>
-                                            <p className="font-xs mb-5"><span className="neutral-500">Tags:</span><span className="neutral-900">fashion, dress, girls, blue</span></p>
-                                        </div>
-                                        <div className="box-tag-right">
-                                            <span className="font-sm">Share:</span>
-                                        </div>
-                                    </div> */}
                 </div>
               </div>
             </div>

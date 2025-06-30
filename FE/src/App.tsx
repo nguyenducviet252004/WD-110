@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "./components/LayoutComponent/Header";
 import Footer from "./components/LayoutComponent/Footer";
 import AppRoutes from "./Routes/Route";
-import SvgLoading from "./assets/imgs/template/favicon.svg";
+// import SvgLoading from "./assets/imgs/template/favicon.svg";
 
 function App() {
   const [loading, setLoading] = useState(true);
