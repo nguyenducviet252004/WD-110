@@ -6,17 +6,7 @@
 
 @section('content_admin')
 
-    @if (session('success'))
-        <div class="alert alert-success text-center mt-5">
-            {{ session('success') }}
-        </div>
-    @endif
 
-    @if (session('error'))
-        <div class="alert alert-danger mt-5 ">
-            {{ session('error') }}
-        </div>
-    @endif
 
     <h1 class="text-center mt-5 mb-3">Danh sách sản phẩm</h1>
 
@@ -182,7 +172,9 @@
 
     <div class="d-flex justify-content-center mt-4">
         {{ $products->appends(['status' => request()->get('status')])->links() }}
+
     </div>
+
 
     <style>
         .gallery-image {
