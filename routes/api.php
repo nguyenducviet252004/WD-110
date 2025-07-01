@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ProductVariantController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\API\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,3 +75,16 @@ Route::middleware('auth:sanctum')->prefix('cart')->group(function () {
     Route::delete('/remove/{id}', [CartController::class, 'destroy']);
     Route::delete('/clear',       [CartController::class, 'clear']);
 });
+
+// Public GET
+Route::get('categories',         [CategoryController::class, 'index']);
+Route::get('categories/{category}', [CategoryController::class, 'show']);
+
+// Admin CRUD
+Route::middleware(['auth:sanctum','role:admin'])
+      ->prefix('categories')
+      ->group(function () {
+          Route::post('/',          [CategoryController::class, 'store']);
+          Route::put('{category}',  [CategoryController::class, 'update']);
+          Route::delete('{category}', [CategoryController::class, 'destroy']);
+      });
