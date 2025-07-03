@@ -21,7 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \App\Http\Middleware\ConvertFormDataForPut::class,
+        // \App\Http\Middleware\ConvertFormDataForPut::class, // Đã comment vì không tồn tại
     ];
 
     /**
@@ -65,5 +65,17 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    ];
+
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $routeMiddleware = [
+        // ... existing middleware ...
+        'role' => \App\Http\Middleware\CheckRole::class,
     ];
 }
