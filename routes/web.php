@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\Admin\VoucherController;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\Admin\CategoryController;
+
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\VoucherController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +26,18 @@ use App\Http\Controllers\VoucherController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::prefix('admin/categories')->name('admin.categories.')->group(function () {
+    Route::get('/', [CategoryController::class, 'index'])->name('index');
+    Route::get('/create', [CategoryController::class, 'create'])->name('create');
+    Route::post('/', [CategoryController::class, 'store'])->name('store');
+    Route::get('/{category:slug}/edit', [CategoryController::class, 'edit'])->name('edit');
+    Route::put('/{category:slug}', [CategoryController::class, 'update'])->name('update');
+    Route::delete('/{category:slug}', [CategoryController::class, 'destroy'])->name('destroy');
+    Route::get('/{category:slug}', [CategoryController::class, 'show'])->name('show');
+    // new
+});
+
 
 
 Route::prefix('admin/vouchers')->name('admin.vouchers.')->group(function () {
@@ -58,5 +74,6 @@ Route::prefix('admin')->group(function () {
     // Routes cho quản lý kích thước
     Route::resource('sizes', SizeController::class);
 });
+
 
 

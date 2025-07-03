@@ -2,76 +2,94 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Helper\Toastr;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
-use App\Services\CategoryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    private const PATH_VIEW = 'admin.categories.';
-    protected $categoryService;
-
-    public function __construct(CategoryService $categoryService)
+    public function index(Request $request)
     {
-        $this->categoryService = $categoryService;
-    }
-
-    public function index()
-    {
-
-        $categories = $this->categoryService->all();
+        $categories = Category::latest('id')->paginate(5);
 
         if ($categories->currentPage() > $categories->lastPage()) {
             return redirect()->route('admin.categories.index', ['page' => $categories->lastPage()]);
         }
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('categories'));
+        return view('admin.categories.index', compact('categories'));
+
     }
 
     public function create()
     {
-        return view(self::PATH_VIEW . __FUNCTION__);
+        return view('admin.categories.create');
     }
-    public function store(StoreCategoryRequest $request)
-    {
-        try {
-            $this->categoryService->store($request->all());
 
-            Toastr::success(null, 'Thao tác thành công');
-            return redirect()->route('admin.categories.index');
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-        }
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|unique:categories|max:255',
+            'slug' => 'required|max:190|unique:categories,slug',
+            'description' => 'required|string',
+            'status' => 'boolean',
+            'is_active' => 'boolean',
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'description' => $request->description,
+            'status' => $request->status,
+            'is_active' => 1,
+        ]);
+
+        return redirect()->route('admin.categories.index')->with('success', 'Thêm mới thành công');
     }
 
     public function show(Category $category)
     {
-        return view(self::PATH_VIEW . __FUNCTION__, compact('category'));
+        return view('admin.categories.show', compact('category'));
     }
 
     public function edit(Category $category)
     {
-        return view(self::PATH_VIEW . __FUNCTION__, compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(Request $request, Category $category)
     {
         try {
-            $this->categoryService->update($category, $request->all());
+            // Kiểm tra và validate input
+            $request->validate([
+                'name' => 'required|unique:categories,name,' . $category->id . '|max:255',
+                'slug' => 'required|max:190|unique:categories,slug,' . $category->id,
+                'description' => 'required|string',
+                'status' => 'boolean',
+                'is_active' => 'boolean',
+            ]);
 
-            Toastr::success(null, 'Thao tác thành công');
-            return redirect()->back();
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
+            // Cập nhật danh mục
+            $category->update([
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'description' => $request->description,
+                'status' => $request->status,
+                'is_active' => $request->is_active,
+            ]);
+
+            return redirect()->route('admin.categories.index')->with('success', 'Cập nhật thành công');
+        } catch (\Exception $e) {
+            // Nếu có lỗi, trả về thông báo lỗi
+            return back()->with('error', 'Có lỗi xảy ra khi cập nhật danh mục: ');
         }
     }
-  
+
+    public function destroy(Category $category)
+    {
+
+
+        $category->delete();
+
+        return back()->with('success', 'Xóa danh mục thành công');
+    }
 }
