@@ -363,7 +363,7 @@ const Header: React.FC = () => {
           <div className="main-header">
             <div className="header-logo">
               <Link to="/" className="d-flex">
-                <img src={isLogo} alt="" width={"120px"} />
+                <img src={Logo} alt="" width={"100px"} />
               </Link>
             </div>
             <div className="header-menu">
