@@ -40,11 +40,6 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
-      public function galleries()
-    {
-        return $this->hasMany(ProductGallery::class);
-    }
-    
     // Accessor để trả về URL đầy đủ cho thumb_image
     public function getThumbImageAttribute($value)
     {

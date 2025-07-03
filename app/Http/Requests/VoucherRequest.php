@@ -65,8 +65,4 @@ class VoucherRequest extends FormRequest
             'max_usage.integer' => 'Số lần sử dụng tối đa phải là số nguyên.',
         ];
     }
-
 }
-
-}
-

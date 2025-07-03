@@ -31,13 +31,6 @@ class User extends Authenticatable
         'role'
     ];
 
-     public function vouchers()
-    {
-        return $this->belongsToMany(Voucher::class, 'user_vouchers')
-            ->withPivot('usage_count', 'is_used', 'assigned_at')
-            ->withTimestamps();
-    }
-    
     /**
      * The attributes that should be hidden for serialization.
      *
