@@ -35,4 +35,7 @@ class Voucher extends Model
             ->withPivot('usage_count', 'is_used', 'assigned_at')
             ->withTimestamps();
     }
+
+}
+
 }

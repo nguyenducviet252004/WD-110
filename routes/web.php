@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\VoucherController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ColorController;
@@ -20,6 +21,19 @@ use App\Http\Controllers\VoucherController;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+
+Route::prefix('admin/vouchers')->name('admin.vouchers.')->group(function () {
+    Route::get('/', [VoucherController::class, 'index'])->name('index');
+    Route::get('/create', [VoucherController::class, 'create'])->name('create');
+    Route::post('/', [VoucherController::class, 'store'])->name('store');
+    Route::get('/{id}', [VoucherController::class, 'show'])->name('show');
+    Route::get('/{voucher}/edit', [VoucherController::class, 'edit'])->name('edit');
+    Route::put('/{voucher}', [VoucherController::class, 'update'])->name('update');
+
+    Route::delete('/{voucher}', [VoucherController::class, 'destroy'])->name('destroy');
+    // Route::get('/voucher/{id}/toggle-status', [VoucherController::class, 'toggleStatus'])->name('vouchers.toggleStatus');
 });
 
 // Product routes
@@ -44,4 +58,5 @@ Route::prefix('admin')->group(function () {
     // Routes cho quản lý kích thước
     Route::resource('sizes', SizeController::class);
 });
+
 
