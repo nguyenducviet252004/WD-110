@@ -13,9 +13,16 @@ class ProductApiController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->latest()->paginate(10);
+        $products = Product::with([
+            'category',
+            'variants.size',
+            'variants.color',
+            'galleries'
+        ])->latest()->paginate(10);
+
         return response()->json($products);
     }
+
 
     public function show($id)
     {
@@ -29,6 +36,18 @@ class ProductApiController extends Controller
         return response()->json($product);
     }
 
+
+    public function getByCategory($categoryId)
+    {
+        $products = Product::with([
+            'category',
+            'variants.size',
+            'variants.color',
+            'galleries'
+        ])->where('category_id', $categoryId)->latest()->paginate(10);
+
+        return response()->json($products);
+    }
 
 
     public function store(Request $request)

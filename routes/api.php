@@ -103,6 +103,9 @@ Route::prefix('products')->group(function () {
     Route::get('{id}', [ProductApiController::class, 'show']);
     Route::put('{id}', [ProductApiController::class, 'update']);
     Route::delete('{id}', [ProductApiController::class, 'destroy']);
+ Route::get('/categories/{categoryId}/products', [ProductApiController::class, 'getByCategory'])->name('products.byCategory');
+
+
 });
 
     // Admin routes
