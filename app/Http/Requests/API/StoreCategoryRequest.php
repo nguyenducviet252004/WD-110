@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\API;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'        => 'required|string|max:255',
+            'slug'        => 'nullable|string|max:190|unique:categories,slug',
+            'description' => 'nullable|string',
+            'status'      => 'boolean',
+            'is_active'   => 'boolean',
         ];
     }
+
 }
