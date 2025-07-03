@@ -18,12 +18,12 @@ class SizeController extends Controller
 
         // Đếm số lượng sản phẩm liên quan đến mỗi kích thước
         foreach ($data as $size) {
-            $size->product_count = DB::table('product_size')
-                ->where('size_id', $size->id)
+            $size->product_count = DB::table('product_sizes')
+                ->where('id', $size->id)
                 ->count();
         }
 
-        return view('bienthe.sizes.index', compact('data'));
+        return view('sizes.index', compact('data'));
     }
 
     /**
@@ -31,7 +31,7 @@ class SizeController extends Controller
      */
     public function create()
     {
-        return view('bienthe.sizes.create');
+        return view('sizes.create');
     }
 
     /**
@@ -59,7 +59,7 @@ class SizeController extends Controller
      */
     public function show(Size $size)
     {
-        return view('bienthe.sizes.show', compact('size'));
+        return view('sizes.show', compact('size'));
     }
 
     /**
@@ -67,7 +67,7 @@ class SizeController extends Controller
      */
     public function edit(Size $size)
     {
-        return view('bienthe.sizes.edit', compact('size'));
+        return view('sizes.edit', compact('size'));
     }
 
     /**
@@ -81,7 +81,7 @@ class SizeController extends Controller
 
         try {
             $size->update($data);  // Cập nhật bản ghi cụ thể
-            return redirect('sizes')->with('success', 'Cập nhật kích thước thành công');
+            return redirect('sizes.index')->with('success', 'Cập nhật kích thước thành công');
         } catch (\Throwable $th) {
             return back()
                 ->with('error', 'Đã có lỗi xảy ra vui lòng thử lại');
@@ -91,21 +91,21 @@ class SizeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Size $size)
+  public function destroy(Size $size)
     {
         try {
-            // Kiểm tra xem có sản phẩm nào liên kết với kích thước này không
-            $isProductUsingSize = DB::table('product_size')
-                ->where('size_id', $size->id)
+            // Kiểm tra xem có sản phẩm nào liên kết với màu sắc này không (dựa vào bảng product_variants)
+            $isProductUsingSize = DB::table('product_variants')
+                ->where('product_size_id', $size->id)
                 ->exists();
 
             if ($isProductUsingSize) {
-                return back()->with('error', 'Không thể xóa kích thước này vì có sản phẩm liên quan.');
+                return back()->with('error', 'Không thể xóa size này vì có sản phẩm liên quan.');
             }
 
-            // Nếu không có sản phẩm nào sử dụng size này, thực hiện xóa
+            // Nếu không có sản phẩm nào sử dụng color này, thực hiện xóa
             $size->delete();
-            return back()->with('success', 'Xóa kích thước thành công.');
+            return back()->with('success', 'Xóa size thành công.');
         } catch (\Throwable $th) {
             return back()
                 ->with('success', false)

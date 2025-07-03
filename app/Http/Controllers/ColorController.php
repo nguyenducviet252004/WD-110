@@ -19,12 +19,12 @@ class ColorController extends Controller
 
         // Đếm số lượng sản phẩm sử dụng mỗi màu
         foreach ($data as $color) {
-            $color->product_count = DB::table('product_color')
-                ->where('color_id', $color->id)
+            $color->product_count = DB::table('product_colors')
+                ->where('id', $color->id)
                 ->count();
         }
 
-        return view('bienthe.colors.index', compact('data'));
+        return view('colors.index', compact('data'));
     }
 
     /**
@@ -32,7 +32,7 @@ class ColorController extends Controller
      */
     public function create()
     {
-        return view('bienthe.colors.create');
+        return view('colors.create');
     }
 
     /**
@@ -61,7 +61,7 @@ class ColorController extends Controller
      */
     public function show(Color $color)
     {
-        return view('bienthe.colors.show', compact('color'));
+        return view('colors.show', compact('color'));
     }
 
     /**
@@ -69,7 +69,7 @@ class ColorController extends Controller
      */
     public function edit(Color $color)
     {
-        return view('bienthe.colors.edit', compact('color'));
+        return view('colors.edit', compact('color'));
     }
 
     /**
@@ -84,7 +84,8 @@ class ColorController extends Controller
 
         try {
             $color->update($data);  // Cập nhật bản ghi cụ thể
-            return redirect('colors')->with('success', 'Thao tác thành công');
+           
+        return redirect()->route('colors.index')->with('success', 'Thao tác thành công');
         } catch (\Throwable $th) {
             return back()
                 ->with('error', 'Đã có lỗi xảy ra vui lòng thử lại');
@@ -97,9 +98,9 @@ class ColorController extends Controller
     public function destroy(Color $color)
     {
         try {
-            // Kiểm tra xem có sản phẩm nào liên kết với màu sắc này không
-            $isProductUsingColor = DB::table('product_color')
-                ->where('color_id', $color->id)
+            // Kiểm tra xem có sản phẩm nào liên kết với màu sắc này không (dựa vào bảng product_variants)
+            $isProductUsingColor = DB::table('product_variants')
+                ->where('product_color_id', $color->id)
                 ->exists();
 
             if ($isProductUsingColor) {

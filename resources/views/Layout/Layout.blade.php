@@ -20,7 +20,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/chart.js') }}"></script>
 
-    <link rel="icon" href="{{ asset('logo.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('logo.jpg') }}" type="image/x-icon">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
 </head>
