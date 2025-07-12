@@ -26,7 +26,7 @@ return new class extends Migration
                 ->onDelete('set null'); // Đặt null nếu bản ghi liên quan bị xóa
 
             $table->string('image_path')->nullable();
-            $table->tinyInteger('rating')->default(5); //thang 5 điểm
+            $table->tinyInteger('rating')->default(5); //thang 5 điểm 
             $table->text('comment')->nullable();
             $table->boolean('is_reviews')->default(1);
             $table->timestamps();

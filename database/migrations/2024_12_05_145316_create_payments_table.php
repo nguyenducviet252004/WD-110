@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('secure_hash')->nullable(); // Chữ ký bảo mật trả về từ VNPay
             $table->timestamps();
         });
-
+        
     }
 
     /**

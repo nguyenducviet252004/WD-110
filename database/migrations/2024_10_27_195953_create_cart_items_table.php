@@ -19,7 +19,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Cart::class)->constrained();
             $table->foreignIdFor(Product::class)->constrained();
-            $table->integer('quantity');
+            $table->integer('quantity'); 
             $table->decimal('price', 10, 2);
             $table->foreignIdFor(Size::class)->constrained();
             $table->foreignIdFor(Color::class)->constrained();

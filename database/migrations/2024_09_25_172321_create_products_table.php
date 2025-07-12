@@ -31,7 +31,7 @@ return new class extends Migration
         });
 
         DB::statement('ALTER TABLE `products` ADD CONSTRAINT `check_price` CHECK (`price` >= `import_price`)'); //dkien: giá bán phải lớn hơn giá nhập
-        DB::statement('ALTER TABLE `products` ADD CONSTRAINT `check_quantity` CHECK (`quantity` >= 0)'); //dkien: sl>=0
+        DB::statement('ALTER TABLE `products` ADD CONSTRAINT `check_quantity` CHECK (`quantity` >= 0)'); //dkien: sl>=0  
     }
 
     /**
