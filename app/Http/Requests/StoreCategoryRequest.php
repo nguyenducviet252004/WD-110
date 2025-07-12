@@ -20,9 +20,13 @@ class StoreCategoryRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            //
-        ];
-    }
+{
+    return [
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'slug' => 'nullable|string|max:190|unique:categories,slug',
+        'status' => 'boolean',
+        'is_active' => 'boolean',
+    ];
+}
 }

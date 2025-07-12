@@ -20,9 +20,13 @@ class UpdateCategoryRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            //
-        ];
-    }
+{
+    return [
+        'name' => 'sometimes|string|max:255',
+        'description' => 'nullable|string',
+        'slug' => 'nullable|string|max:190|unique:categories,slug,' . $this->category,
+        'status' => 'boolean',
+        'is_active' => 'boolean',
+    ];
+}
 }
