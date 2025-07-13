@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\SizeController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,4 +22,5 @@ Route::get('/', function () {
 // Route cho Admin
 Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->group(function () {
     Route::resource('colors', ColorController::class);
+    Route::resource('sizes', SizeController::class);
 });
