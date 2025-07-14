@@ -5,6 +5,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\ProductController;
 
 
 
@@ -21,10 +22,4 @@ use Illuminate\Support\Facades\Route;
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
-<<<<<<< HEAD
-// });
-=======
-// });
 
-
->>>>>>> f715cbeaa74932bba2fece1dea169da23117fde8
