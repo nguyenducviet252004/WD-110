@@ -20,12 +20,43 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/chart.js') }}"></script>
 
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <link rel="icon" href="{{ asset('logo.jpg') }}" type="image/x-icon">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
 </head>
 
 <body>
+
+    <script>
+    @if (session('success'))
+        toastr.success("{{ session('success') }}");
+    @endif
+
+    @if (session('error'))
+        toastr.error("{{ session('error') }}");
+    @endif
+
+    @if (session('warning'))
+        toastr.warning("{{ session('warning') }}");
+    @endif
+
+    @if (session('info'))
+        toastr.info("{{ session('info') }}");
+    @endif
+
+    toastr.options = {
+    "closeButton": true,
+    "progressBar": true,
+    "positionClass": "toast-bottom-right", 
+    "timeOut": "4000"
+};
+
+</script>
 
     <div class="container-scroller">
         @include('Layout.Nav')

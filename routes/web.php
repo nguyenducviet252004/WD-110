@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\admin\VoucherController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\SizeController;
 use Illuminate\Support\Facades\Route;
@@ -19,8 +21,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route cho Admin
-Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->group(function () {
-    Route::resource('colors', ColorController::class);
-    Route::resource('sizes', SizeController::class);
+// // Route cho Admin
+// Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->group(function () {
+//     Route::resource('colors', ColorController::class);
+//     Route::resource('sizes', SizeController::class);
+// });
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('vouchers', VoucherController::class);
 });
