@@ -1,7 +1,8 @@
 <?php
-
+use App\Http\Controllers\ColorController;
+use App\Http\Controllers\SizeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\CategoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,13 +18,9 @@ use App\Http\Controllers\Admin\CategoryController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::prefix('admin/categories')->name('admin.categories.')->group(function () {
-    Route::get('/', [CategoryController::class, 'index'])->name('index');
-    Route::get('/create', [CategoryController::class, 'create'])->name('create');
-    Route::post('/', [CategoryController::class, 'store'])->name('store');
-    Route::get('/{category:slug}/edit', [CategoryController::class, 'edit'])->name('edit');
-    Route::put('/{category:slug}', [CategoryController::class, 'update'])->name('update');
-    Route::delete('/{category:slug}', [CategoryController::class, 'destroy'])->name('destroy');
-    Route::get('/{category:slug}', [CategoryController::class, 'show'])->name('show');
-    // new
+
+// Route cho Admin
+Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->group(function () {
+    Route::resource('colors', ColorController::class);
+    Route::resource('sizes', SizeController::class);
 });

@@ -38,10 +38,5 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-            Route::bind('category', function ($value) {
-            return Category::where('slug', $value)->firstOrFail();
-        });
-
-        parent::boot();
     }
 }
