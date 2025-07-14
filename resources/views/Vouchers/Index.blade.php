@@ -5,7 +5,17 @@
 @endsection
 
 @section('content_admin')
+    @if (session('success'))
+        <div class="alert alert-success text-center">
+            {{ session('success') }}
+        </div>
+    @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
 
     <h1 class="text-center mt-5">Danh sách phiếu giảm giá</h1>
 
@@ -15,13 +25,25 @@
         <div class="row">
             <!-- Status Filter (Active/Inactive) -->
             <div class="col-md-2">
-                <select name="is_active" id="is_active" class="form-select"
+                <select name="status" id="status" class="form-select"
                     onchange="document.getElementById('filterForm').submit()">
-                    <option value="" class="text-dark">Tất cả trạng thái</option>
-                    <option value="1" class="text-dark" {{ request('is_active') == '1' ? 'selected' : '' }}>Đang hoạt động
+                    <option value="" class="text-dark">Tất cả rạng thái</option>
+                    <option value="1" class="text-dark" {{ request('status') == '1' ? 'selected' : '' }}>Đang hoạt động
                     </option>
-                    <option value="0" class="text-dark" {{ request('is_active') == '0' ? 'selected' : '' }}>Không hoạt
+                    <option value="0" class="text-dark" {{ request('status') == '0' ? 'selected' : '' }}>Không hoạt
                         động</option>
+                </select>
+            </div>
+
+            <!-- Expiry Status Filter (Valid/Expired) -->
+            <div class="col-md-2">
+                <select name="expiry_status" id="expiry_status" class="form-select"
+                    onchange="document.getElementById('filterForm').submit()">
+                    <option value="" class="text-dark">Tất cả thời hạn</option>
+                    <option value="valid" class="text-dark" {{ request('expiry_status') == 'valid' ? 'selected' : '' }}>Còn
+                        hạn</option>
+                    <option value="expired" class="text-dark" {{ request('expiry_status') == 'expired' ? 'selected' : '' }}>
+                        Đã hết hạn</option>
                 </select>
             </div>
 
@@ -29,7 +51,7 @@
             <div class="col-md-2">
                 <select name="sort_by" id="sort_by" class="form-select"
                     onchange="document.getElementById('filterForm').submit()">
-                    <option value="" class="text-dark">Sắp xếp mặc định</option>
+                    <option value="" class="text-dark">Giá mặc định</option>
                     <option value="asc" class="text-dark" {{ request('sort_by') == 'asc' ? 'selected' : '' }}>Giảm dần
                     </option>
                     <option value="desc" class="text-dark" {{ request('sort_by') == 'desc' ? 'selected' : '' }}>Tăng dần
@@ -45,11 +67,9 @@
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Mã giảm giá</th>
-                    <th scope="col">Tiêu đề</th>
-                    <th scope="col">Giá trị giảm giá</th>
-                    <th scope="col">Đơn tối thiểu</th>
-                    <th scope="col">Số lần dùng tối đa</th>
-                    <th scope="col">Đã dùng</th>
+                    <th scope="col">Giá trị</th>
+                    <th scope="col">Đơn đạt tối thiểu</th>
+                    <th scope="col">Đơn đạt tối đa</th>
                     <th scope="col">Mô tả</th>
                     <th scope="col">Bắt đầu</th>
                     <th scope="col">Kết thúc</th>
@@ -62,14 +82,12 @@
                     <tr>
                         <td>{{ $voucher->id }}</td>
                         <td>{{ $voucher->code }}</td>
-                        <td>{{ $voucher->title ?? 'N/A' }}</td>
-                        <td>{{ $voucher->discount ?? 'N/A' }}</td>
-                        <td>{{ $voucher->min_order_amount ?? 'N/A' }}</td>
-                        <td>{{ $voucher->max_usage ?? 'N/A' }}</td>
-                        <td>{{ $voucher->used_count ?? 0 }}</td>
+                        <td>{{ $voucher->discount_value ?? 'N/A' }} VND</td>
+                        <td>{{ $voucher->total_min ?? 'N/A' }} VND</td>
+                        <td>{{ $voucher->total_max ?? 'N/A' }} VND</td>
                         <td>{{ $voucher->description ?? 'N/A' }}</td>
-                        <td>{{ $voucher->start_date_time ? \Carbon\Carbon::parse($voucher->start_date_time)->format('d-m-Y H:i') : '' }}</td>
-                        <td>{{ $voucher->end_date_time ? \Carbon\Carbon::parse($voucher->end_date_time)->format('d-m-Y H:i') : '' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($voucher->start_day)->format('d-m-Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($voucher->end_day)->format('d-m-Y') }}</td>
                         <td>
                             @if ($voucher->is_active)
                                 <span class="badge bg-success">Hoạt động</span>
@@ -77,21 +95,22 @@
                                 <span class="badge bg-danger">Không hoạt động</span>
                             @endif
                         </td>
+
                         <td>
                             <a class="btn btn-outline-warning mb-3" href="{{ route('vouchers.edit', $voucher->id) }}">
                                 Cập nhật</a>
-                            <form action="{{ route('vouchers.toggle-status', $voucher->id) }}" method="POST" style="display:inline-block">
-                                @csrf
-                                <button type="submit" onclick="return confirm('Bạn có chắc muốn cập nhật trạng thái?')"
-                                    class="btn {{ $voucher->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }} mb-3">
-                                    {{ $voucher->is_active ? 'Ẩn' : 'Hiện' }}
-                                </button>
-                            </form>
+                            <a onclick="return confirm('Bạn có chắc muốn cập nhật trạng thái?')"
+                                href="{{ route('vouchers.index', ['toggle_active' => $voucher->id]) }}"
+                                class="btn {{ $voucher->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }} mb-3">
+                                {{ $voucher->is_active ? 'Ẩn' : 'Hiện' }}
+                            </a>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+
+        {{-- Phân trang --}}
         <div class="pagination justify-content-center">
             {{ $vouchers->links() }}
         </div>
