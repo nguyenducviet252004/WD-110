@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\QuanliReviewController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
@@ -27,4 +28,5 @@ Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->
     Route::resource('sizes', SizeController::class);
 
     Route::resource('vouchers', VoucherController::class);
+    Route::resource('review', QuanliReviewController::class);
 });
