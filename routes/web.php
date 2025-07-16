@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\QuanliReviewController;
 use App\Http\Controllers\SizeController;
@@ -29,4 +30,5 @@ Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->
 
     Route::resource('vouchers', VoucherController::class);
     Route::resource('review', QuanliReviewController::class);
+    Route::resource('blog', BlogController::class);
 });
