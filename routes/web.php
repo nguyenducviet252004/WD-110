@@ -6,6 +6,7 @@ use App\Http\Controllers\QuanliReviewController;
 use App\Http\Controllers\SizeController;
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\UservoucherController;
 use App\Http\Controllers\VoucherController;
 
@@ -28,19 +29,19 @@ Route::get('/', function () {
 });
 
 Route::controller(AccountController::class)->group(function () {
- // Đăng ký
+    // Đăng ký
     Route::get('register', 'register')->name('register.form');
     Route::post('register', 'register_')->name('register');
-     // Đăng nhập
+    // Đăng nhập
     Route::get('login', 'login')->name('login.form');
     Route::post('login', 'login_')->name('login');
-// Quên mật khẩu
+    // Quên mật khẩu
     Route::get('password/forgot', 'rspassword')->name('password.forgot.form');
     Route::post('password/forgot', 'rspassword_')->name('password.forgot');
     // Đặt lại mật khẩu
     Route::get('password/reset/{token}', 'updatepassword')->name('password.reset');
     Route::post('password/reset', 'updatepassword_')->name('password.update');
-        // Xác thực email
+    // Xác thực email
     Route::get('/verify', 'verify')->name('verify')->middleware('auth');
     Route::get('/verify/{id}/{hash}', 'verifydone')->name('verification.verify');
 
@@ -65,5 +66,6 @@ Route::controller(UserController::class)->middleware(['token.auth', 'user'])->gr
     Route::post('/order/{id}/cancel', [UservoucherController::class, 'cancelOrder'])->name('order.cancel');
     Route::post('/order/{id}/confirm-receive', [UservoucherController::class, 'confirmReceiveOrder'])->name('order.confirmReceive');
 
-   
+    Route::resource('userorder', UserOrderController::class);
+    Route::patch('/orders/{orderId}/done',  [UserOrderController::class, 'done'])->name('done');
 });
