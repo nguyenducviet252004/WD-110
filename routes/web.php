@@ -6,7 +6,7 @@ use App\Http\Controllers\QuanliReviewController;
 use App\Http\Controllers\SizeController;
 
 use App\Http\Controllers\AccountController;
-
+use App\Http\Controllers\UservoucherController;
 use App\Http\Controllers\VoucherController;
 
 use Illuminate\Support\Facades\Route;
@@ -56,4 +56,14 @@ Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->
     Route::resource('vouchers', VoucherController::class);
     Route::resource('review', QuanliReviewController::class);
     Route::resource('blog', BlogController::class);
+});
+
+
+Route::controller(UserController::class)->middleware(['token.auth', 'user'])->group(function () {
+
+    Route::resource('uservouchers', UservoucherController::class);
+    Route::post('/order/{id}/cancel', [UservoucherController::class, 'cancelOrder'])->name('order.cancel');
+    Route::post('/order/{id}/confirm-receive', [UservoucherController::class, 'confirmReceiveOrder'])->name('order.confirmReceive');
+
+   
 });
