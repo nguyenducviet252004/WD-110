@@ -124,4 +124,51 @@ class ThongkeController extends Controller
         // Trả về view chính
         return view('thongke.orders', compact('data'));
     }
+
+    public function topproduct(Request $request)
+    {
+        // Lấy ngày bắt đầu và kết thúc từ bộ lọc hoặc sử dụng giá trị mặc định
+        $startDate = $request->input('start_date', now()->startOfDay());
+        $endDate = $request->input('end_date', now()->endOfDay());
+
+        // Lấy danh sách sanr phẩm bán chạy nhất dựa trên khoảng thời gian
+        $topProducts = Order_detail::select(
+            'product_id',
+            DB::raw('SUM(quantity) as total_quantity'),
+            DB::raw('COUNT(order_id) as sales_count'),
+            DB::raw('SUM(total) as total_revenue')
+        )
+            ->whereHas('order', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('creates_at', [$startDate, $endDate]);
+            })
+            ->groupBy('product_id')
+            ->orderBy('total_quantity', 'desc')
+            ->take(10) // Lấy 10 sản phẩm bán chạy nhất
+            ->get()
+            ->map(function ($item) {
+                $product = Product::find($item->product_id);
+                return [
+                    'product_id' => $item->product_id,
+                    'product_name' => $product ? $product->name : 'Unknown Product',
+                    'image' => $product ? $product->avatar : null,
+                    'total_quantity' => $item->total_quantity,
+                    'sales_count' => $item->sales_count,
+                    'total_revenue' => $item->total_revenue
+                ];
+            })
+            ->toArray();
+
+        // Kiểm tra nếu không có dữ liệu sản phẩm
+        if (empty($topProducts)) {
+            $topProducts = null; // Hoặc bất kì thông báo nào cho biết không có dữ liệu
+        }
+
+        // Nếu dây là yêu cầu AJAX, trả về view đã render cho sản phẩm bán chạy nhất
+        if ($request->ajax()) {
+            return view('thongke.topproduct', compact('topProducts'))->render();
+        }
+
+        // Trả về view chính
+        return view('thongke.topproduct', compact('topProducts'));
+    }
 }
