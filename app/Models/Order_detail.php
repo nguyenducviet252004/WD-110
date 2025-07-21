@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order_detail extends Model
 {
     use HasFactory;
+
      protected $fillable = [
         'order_id',
         'product_id',
@@ -39,3 +40,6 @@ class Order_detail extends Model
         return $this->belongsTo(Color::class, 'color_id');
     }
 }
+
+}
+
