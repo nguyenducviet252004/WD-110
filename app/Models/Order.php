@@ -26,7 +26,6 @@ class Order extends Model
     protected $primaryKey = 'id';
     public $incrementing = false;
 
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -61,5 +60,8 @@ class Order extends Model
     {
         return $this->hasOne(Payment::class, 'order_id', 'id');
     }
+
+}
+
 
 }
