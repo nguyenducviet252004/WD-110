@@ -1,14 +1,17 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\QuanliReviewController;
 use App\Http\Controllers\SizeController;
-
+use App\Http\Controllers\ThongkeController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\UservoucherController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\OrderController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +60,13 @@ Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->
     Route::resource('vouchers', VoucherController::class);
     Route::resource('review', QuanliReviewController::class);
     Route::resource('blog', BlogController::class);
+    Route::resource('orders', OrderController::class);
+
+    // Thống kê
+    Route::get('/search', [AdminController::class, 'search'])->name('search');
+    Route::get('/thongke/account', [ThongkeController::class, 'account'])->name('thongke.account');
+    Route::get('/thongke/orders', [ThongkeController::class, 'orders'])->name('thongke.orders');
+    Route::get('/thongke/topproduct', [ThongkeController::class, 'topproduct'])->name('thongke.topproduct');
 });
 
 
