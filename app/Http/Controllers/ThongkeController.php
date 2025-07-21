@@ -59,4 +59,69 @@ class ThongkeController extends Controller
         // Trả về view
         return view('thongke.account', compact('data'));
     }
+
+    public function orders(Request $request)
+    {
+        // Lấy ngày bắt đầu và ngày kết thúc từ form lọc (nếu có)
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date'))->endOfDay() : null;
+
+        // Query cho đơn hàng đã hoàn thành (tất cả đơn hàng)
+        $query = Order::where('status', 3);
+
+        // Tính toán doanh thu và số lượng đơn hàng cho tháng này, không bị ảnh hưởng bởi bộ lọc
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
+        $currentRevenue = Order::where('status', 3)
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->sum('total_amount');
+        $currentOrderCout = Order::where('status', 3)
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->count();
+
+        // Tính toán doanh thu và số lượng đơn hàng cho tháng trước, không bị ảnh hưởng bởi bộ lọc
+        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
+        $lastRevenue = Order::where('status', 3)
+            ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
+            ->sum('total_amount');
+        $lastOrderCount = Order::where('status', 3)
+            ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
+            ->count();
+
+        // Tính sự thay đổi giữa tháng hiện tại và tháng trước
+        $changeRevenue = $currentRevenue - $lastRevenue;
+        $orderCountChange = $currentOrderCout - $lastOrderCount;
+
+        // Tính doanh thu và số lượng đơn hàng theo bộ lọc (nếu có)
+        if ($startDate && $endDate){
+            // Nếu có bộ lọc, sử dụng whereBetween() đẻ lấy dữ liệu trong khoảng thời gian đã chọn
+            $filteredRevenue = $query->whereBetween('created_at', [$startDate, $endDate])->sum('total_amount');
+            $filteredOrderCount = $query->whereBetween('created_at', [$startDate, $endDate])->count();
+        } else {
+            // Nếu không có bộ lọc thì mặc định là 0
+            $filteredRevenue = 0;
+            $filteredOrderCount = 0;
+        }
+
+        // Dữ liệu để trả về view
+        $data = [
+            'current_revenue' => $currentRevenue,           // Doanh thu tháng này
+            'current_order_count' => $currentOrderCout,     // Số lượng đơn hàng tháng này
+            'last_revenue' => $lastRevenue,                 // Doanh thu tháng trước
+            'last_order_count' => $lastOrderCount,          // Số lượng đơn hàng tháng trước
+            'change_revenue' => $changeRevenue,             // Sự thay đổi doanh thu
+            'order_count_change' => $orderCountChange,      // Sự thay đổi số lượng đơn hàng
+            'filtered_revenue' => $filteredRevenue,         // Doanh thu theo bộ lọc
+            'filtered_order_count' => $filteredOrderCount,  // Số lượng đơn hàng theo bộ lọc
+        ];
+
+        // Kiểm tra AJAX để trả về view phù hợp
+        if ($request->ajax()) {
+            return view('thongke.orders', compact('data'))->render();
+        }
+
+        // Trả về view chính
+        return view('thongke.orders', compact('data'));
+    }
 }

@@ -65,6 +65,7 @@ Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->
     // Thống kê
     Route::get('/search', [AdminController::class, 'search'])->name('search');
     Route::get('/thongke/account', [ThongkeController::class, 'account'])->name('thongke.account');
+    Route::get('/thongke/orders', [ThongkeController::class, 'orders'])->name('thongke.orders');
 });
 
 
