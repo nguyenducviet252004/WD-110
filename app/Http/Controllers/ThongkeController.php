@@ -171,4 +171,36 @@ class ThongkeController extends Controller
         // Trả về view chính
         return view('thongke.topproduct', compact('topProducts'));
     }
+
+    public function tonkho(Request $request)
+    {
+        // Thời điểm cách đây 3 tháng
+        $threeMonthsAgo = Carbon::now()->subMonths(3);
+
+        // Tổng tồn kho trong hệ thống (không phụ thuộc vào bộ lọc)
+        $totalStock = Product::whereRaw('quantity + sell_quantity > 0') // Kiểm tra còn hàng
+            ->where('created_at', '<', $threeMonthsAgo) // Chỉ lấy sản phẩm đã tồn tại hơn 3 tháng
+            ->whereRaw('quantity >= (quantity + sell_quantity) * 0.5') // Kiểm tra tồn kho >= 50% so với tổng số lượng (tồn + đã bán)
+            ->get(); // Lấy sản phẩm thỏa mãn điều kiện
+
+        // Sản phẩm gần hết hàng (tạo trong vòng 3 tháng và tồn kho < 50%)
+        $nearlySoldOut = Product::whereRaw('quantity + sell_quantity > 0') // Kiểm tra còn hàng
+            ->where('created_at', '>=', $threeMonthsAgo) // Chỉ lấy sản phẩm được tạo trong vòng 3 tháng
+            ->whereRaw('quantity < (quantity + sell_quantity) * 0.5') // Kiểm tra số lượng tồn kho hiện tại < 50% tổng số lượng đã nhập
+            ->get(); // Lấy sản phẩm thỏa mãn điều kiện
+
+        // Dữ liệu trả về cho view
+        $data = [
+            'total_stock' => $totalStock, // Tồn kho tổng hợp
+            'nearly_sold_out' => $nearlySoldOut, // Sản phẩm gần hết hàng
+        ];
+
+        // Kiểm tra nếu là yêu cầu AJAX
+        if ($request->ajax()) {
+            return view('thongke.tonkho', compact('data'))->render();
+        }
+
+        // Trả về view chính
+        return view('thongke.tonkho', compact('data'));
+    }
 }
