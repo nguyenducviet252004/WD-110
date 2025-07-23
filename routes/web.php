@@ -68,6 +68,8 @@ Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->
     Route::get('/thongke/orders', [ThongkeController::class, 'orders'])->name('thongke.orders');
     Route::get('/thongke/topproduct', [ThongkeController::class, 'topproduct'])->name('thongke.topproduct');
     Route::get('/thongke/tonkho', [ThongkeController::class, 'tonkho'])->name('thongke.tonkho');
+    Route::get('/thongke/khachhang', [ThongkeController::class, 'khachhang'])->name('thongke.khachhang');
+
 });
 
 

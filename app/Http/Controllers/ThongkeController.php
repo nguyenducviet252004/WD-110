@@ -203,4 +203,31 @@ class ThongkeController extends Controller
         // Trả về view chính
         return view('thongke.tonkho', compact('data'));
     }
+
+    public function khachhang(Request $request)
+    {
+        // Lấy ngày bắt đầu và ngày kết thúc từ form lọc (nếu có)
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date'))->endOfDay() : null;
+
+        // Query khách hàng đã mua nhiều nhất tháng này
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
+
+        $topCustomersThisMonth = User::join('orders', 'users.id', '=', 'orders.user_id')
+            ->whereBetween('orders.created_at', [$currentMonthStart, $currentMonthEnd])
+            ->select('users.id', 'users.name', 'users.avatar', DB::raw('COUNT(orders.id) as order_count'))
+            ->groupBy('users.id', 'users.name', 'users.avatar')
+            ->orderByDesc('order_count')
+            ->limit(10) // Lấy 10 khách hàng mua nhiều nhất
+            ->get();
+
+        // Dữ liệu để trả về view
+        $data = [
+            'top_customers_this_month' => $topCustomersThisMonth
+        ];
+
+        // Trả về view chính
+        return view('thongke.khachhang', compact('data'));
+    }
 }
