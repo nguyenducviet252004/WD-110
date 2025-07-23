@@ -230,6 +230,17 @@ class ThongkeController extends Controller
             ->limit(10) // Lấy 10 khách hàng mua nhiều nhất
             ->get();
 
+        // Query theo bộ lọc (nếu có)
+        $filteredCustomers = collect();
+        if ($startDate && $endDate) {
+            $filteredCustomers = User::join('orders', 'users.id', '=', 'orders.user_id')
+                ->whereBetween('orders.created_at', [$startDate, $endDate])
+                ->select('users.id', 'users.name', 'users.avatar', DB::raw('COUNT(orders.id) as order_count'))
+                ->groupBy('users.id', 'users.name', 'users.avatar')
+                ->orderByDesc('order_count')
+                ->get();
+        }
+
         // Dữ liệu để trả về view
         $data = [
             'top_customers_this_month' => $topCustomersThisMonth
