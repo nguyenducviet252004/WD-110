@@ -249,4 +249,45 @@ class ThongkeController extends Controller
         // Trả về view chính
         return view('thongke.khachhang', compact('data'));
     }
+
+    public function voucher(Request $request)
+    {
+        // Lấy ngày bắt đầu và ngày kết thúc từ form lọc (nếu có)
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date'))->endOfDay() : null;
+
+        // Khởi tạo query cho Voucher Usages (dùng để đếm số voucher đã dùng và tổng tiền giảm giá)
+        $voucherUsageQuery = Voucher_usage::join('vouchers', 'vouchers_usages.voucher_id', '=', 'vouchers.id')
+            ->select('vouchers_usages.voucher_id', 'vouchers.code')
+            ->where('vouchers.is_active', 1); // Chỉ lấy voucher đang hoạt động
+
+        // Thêm điều kiện lọc theo khoảng thời gian (nếu có)
+        if ($startDate && $endDate) {
+            $voucherUsageQuery->whereBetween('vouchers_usages.created_at', [$startDate, $endDate]);
+        }
+
+        // Dữ liệu cứng (hoạt động độc lập với form lọc)
+        $totalVouchers = Voucher::where('is_active', 1)->count();
+        $totalUsedVouchers = Voucher_usage::count();
+        $totalDiscountApplied = Voucher_usage::sum('discount_value');
+        $validVouchers = Voucher::where('end_day', '>', Carbon::now())->get();
+
+        // Chuẩn bị dữ liệu để trả về view
+        $data = [
+            'total_vouchers' => $totalVouchers,
+            'total_used_vouchers' => $totalUsedVouchers,
+            'total_discount_applied' => $totalDiscountApplied,
+            'valid_vouchers' => $validVouchers,
+        ];
+
+        // Nếu request là AJAX, trả về view đã render
+        if ($request->ajax()) {
+            return view('thongke.voucher', compact('data'))->render();
+        }
+
+        // Trả về view chính
+        return view('thongke.voucher', compact('data'));
+
+    }
+
 }
