@@ -305,4 +305,53 @@ class ThongkeController extends Controller
 
     }
 
+    public function tiledon(Request $request)
+    {
+        // Lấy ngày bắt đầu và ngày kết thúc từ form lọc (nếu có)
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date'))->endOfDay() : null;
+
+        // PHẦN 1: Số liệu theo form(dữ liệu động theo thời gian lọc)
+        $ordersQuery = Order::query();
+
+        // Thêm điều kiện lọc theo khoảng thời gian (nếu có)
+        if ($startDate && $endDate) {
+            $ordersQuery->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        //Tính tổng đơn hàng, các đơn đã hủy, các đơn đã hoàn thành, phương thức thanh toans
+        $totalOrders = $ordersQuery->count();
+        $canceledOrders = $ordersQuery->where('status', 4)->count();
+        $completedOrders = $ordersQuery->where('status', 3)->count();
+        $onlinePaymentOrders = $ordersQuery->where('payment_method', 2)->count();
+        $codPaymentOrders = $ordersQuery->where('payment_method', 1)->count();
+
+        // Tính tỷ lệ hoàn thành, hủy đơn, tỉ lệ thanh toán COD và online
+        $completionRate = $totalOrders > 0 ? ($completedOrders / $totalOrders) * 100 : 0;
+        $cancelRate = $totalOrders > 0 ? ($canceledOrders / $totalOrders) * 100 : 0;
+        $onlinePaymentRate = $totalOrders > 0 ? ($onlinePaymentOrders / $totalOrders) * 100 : 0;
+        $codPaymentRate = $totalOrders > 0 ? ($codPaymentOrders / $totalOrders) * 100 : 0;
+
+        // Dữ liệu trả về view
+        $data = [
+            'total_orders' => $totalOrders,
+            'canceled_orders' => $canceledOrders,
+            'completed_orders' => $completedOrders,
+            'online_payment_orders' => $onlinePaymentOrders,
+            'cod_payment_orders' => $codPaymentOrders,
+            'completion_rate' => $completionRate,
+            'cancel_rate' => $cancelRate,
+            'online_payment_rate' => $onlinePaymentRate,
+            'cod_payment_rate' => $codPaymentRate,
+        ];
+
+        // Nếu request là AJAX, trả về view đã render
+        if ($request->ajax()) {
+            return view('thongke.tiledon', compact('data'))->render();
+        }
+        
+        // Trả về view chính
+        return view('thongke.tiledon', compact('data'));
+    }
+
 }
