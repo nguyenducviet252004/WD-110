@@ -266,6 +266,18 @@ class ThongkeController extends Controller
             $voucherUsageQuery->whereBetween('vouchers_usages.created_at', [$startDate, $endDate]);
         }
 
+        // Tính số lượng voucher đã sử dụng và tổng tiền giảm giá trong khoảng thời gian lọc
+        $voucherUsedCount = $voucherUsageQuery->count();
+        $totalDiscountValue = $voucherUsageQuery->sum('vouchers_usages.discount_value');
+
+        // Lấy 5 voucher đã được sử dụng nhiều nhất trong khoảng thời gian lọc
+        $top5Vouchers = $voucherUsageQuery
+            ->selectRaw('voucher_usages.voucher_id, vouchers.code, COUNT(voucher_usages.voucher_id) as usage_count, SUM(voucher_usages.discount_value) as total_discount_value')
+            ->groupBy('voucher_usages.voucher_id', 'vouchers.code') // Nhóm theo voucher_id và code
+            ->orderByRaw('usage_count DESC')
+            ->limit(5)
+            ->get();
+
         // Dữ liệu cứng (hoạt động độc lập với form lọc)
         $totalVouchers = Voucher::where('is_active', 1)->count();
         $totalUsedVouchers = Voucher_usage::count();
@@ -274,6 +286,9 @@ class ThongkeController extends Controller
 
         // Chuẩn bị dữ liệu để trả về view
         $data = [
+            'voucher_used_count' => $voucherUsedCount,
+            'total_discount_value' => $totalDiscountValue,
+            'top_5_vouchers' => $top5Vouchers,
             'total_vouchers' => $totalVouchers,
             'total_used_vouchers' => $totalUsedVouchers,
             'total_discount_applied' => $totalDiscountApplied,
