@@ -332,6 +332,23 @@ class ThongkeController extends Controller
         $onlinePaymentRate = $totalOrders > 0 ? ($onlinePaymentOrders / $totalOrders) * 100 : 0;
         $codPaymentRate = $totalOrders > 0 ? ($codPaymentOrders / $totalOrders) * 100 : 0;
 
+        // PHẦN 2: Dữ liệu tháng này (cố định theo tháng hiện tại)
+        $monthStart = Carbon::now()->startOfMonth();
+        $monthEnd = Carbon::now()->endOfMonth();
+
+        $monthlyOrders = Order::whereBetween('created_at', [$monthStart, $monthEnd])->get();
+
+        $totalOrdersThisMonth = $monthlyOrders->count();
+        $canceledOrdersThisMonth = $monthlyOrders->where('status', 4)->count();
+        $completedOrdersThisMonth = $monthlyOrders->where('status', 3)->count();
+        $onlinePaymentOrdersThisMonth = $monthlyOrders->where('payment_method', 2)->count();
+        $codPaymentOrdersThisMonth = $monthlyOrders->where('payment_method', 1)->count();
+
+        $completionRateThisMonth = $totalOrdersThisMonth > 0 ? ($completedOrdersThisMonth / $totalOrdersThisMonth) * 100 : 0;
+        $cancelRateThisMonth = $totalOrdersThisMonth > 0 ? ($canceledOrdersThisMonth / $totalOrdersThisMonth) * 100 : 0;
+        $onlinePaymentRateThisMonth = $totalOrdersThisMonth > 0 ? ($onlinePaymentOrdersThisMonth / $totalOrdersThisMonth) * 100 : 0;
+        $codPaymentRateThisMonth = $totalOrdersThisMonth > 0 ? ($codPaymentOrdersThisMonth / $totalOrdersThisMonth) * 100 : 0;
+
         // Dữ liệu trả về view
         $data = [
             'total_orders' => $totalOrders,
@@ -343,6 +360,15 @@ class ThongkeController extends Controller
             'cancel_rate' => $cancelRate,
             'online_payment_rate' => $onlinePaymentRate,
             'cod_payment_rate' => $codPaymentRate,
+            'total_orders_this_month' => $totalOrdersThisMonth,
+            'canceled_orders_this_month' => $canceledOrdersThisMonth,
+            'completed_orders_this_month' => $completedOrdersThisMonth,
+            'online_payment_orders_this_month' => $onlinePaymentOrdersThisMonth,
+            'cod_payment_orders_this_month' => $codPaymentOrdersThisMonth,
+            'completion_rate_this_month' => $completionRateThisMonth,
+            'cancel_rate_this_month' => $cancelRateThisMonth,
+            'online_payment_rate_this_month' => $onlinePaymentRateThisMonth,
+            'cod_payment_rate_this_month' => $codPaymentRateThisMonth,
         ];
 
         // Nếu request là AJAX, trả về view đã render
