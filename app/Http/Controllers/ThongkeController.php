@@ -332,6 +332,47 @@ class ThongkeController extends Controller
         $onlinePaymentRate = $totalOrders > 0 ? ($onlinePaymentOrders / $totalOrders) * 100 : 0;
         $codPaymentRate = $totalOrders > 0 ? ($codPaymentOrders / $totalOrders) * 100 : 0;
 
+        // PHẦN 2: Dữ liệu tháng này (cố định theo tháng hiện tại)
+        $monthStart = Carbon::now()->startOfMonth();
+        $monthEnd = Carbon::now()->endOfMonth();
+
+        $monthlyOrders = Order::whereBetween('created_at', [$monthStart, $monthEnd])->get();
+
+        $totalOrdersThisMonth = $monthlyOrders->count();
+        $canceledOrdersThisMonth = $monthlyOrders->where('status', 4)->count();
+        $completedOrdersThisMonth = $monthlyOrders->where('status', 3)->count();
+        $onlinePaymentOrdersThisMonth = $monthlyOrders->where('payment_method', 2)->count();
+        $codPaymentOrdersThisMonth = $monthlyOrders->where('payment_method', 1)->count();
+
+        $completionRateThisMonth = $totalOrdersThisMonth > 0 ? ($completedOrdersThisMonth / $totalOrdersThisMonth) * 100 : 0;
+        $cancelRateThisMonth = $totalOrdersThisMonth > 0 ? ($canceledOrdersThisMonth / $totalOrdersThisMonth) * 100 : 0;
+        $onlinePaymentRateThisMonth = $totalOrdersThisMonth > 0 ? ($onlinePaymentOrdersThisMonth / $totalOrdersThisMonth) * 100 : 0;
+        $codPaymentRateThisMonth = $totalOrdersThisMonth > 0 ? ($codPaymentOrdersThisMonth / $totalOrdersThisMonth) * 100 : 0;
+
+        // PHẦN 3: Dữ liệu toàn hệ thống (cố định không thay đổi theo form)
+        $totalOrdersSystem = Order::count();
+        $canceledOrdersSystem = Order::where('status', 4)->count();
+        $completedOrdersSystem = Order::where('status', 3)->count();
+        $onlinePaymentOrdersSystem = Order::where('payment_method', 2)->count();
+        $codPaymentOrdersSystem = Order::where('payment_method', 1)->count();
+
+        // Đếm các đơn hàng có trạng thái khác ngoài hoàn thành (3) và hủy (4)
+        $otherStatusOrdersSystem = Order::whereNotIn('status', [3, 4])->count(); // Đơn hàng có trạng thái khác ngoài hoàn thành và hủy
+
+        $completionRateSystem = $totalOrdersSystem > 0 ? ($completedOrdersSystem / $totalOrdersSystem) * 100 : 0;
+        $cancelRateSystem = $totalOrdersSystem > 0 ? ($canceledOrdersSystem / $totalOrdersSystem) * 100 : 0;
+        $onlinePaymentRateSystem = $totalOrdersSystem > 0 ? ($onlinePaymentOrdersSystem / $totalOrdersSystem) * 100 : 0;
+        $codPaymentRateSystem = $totalOrdersSystem > 0 ? ($codPaymentOrdersSystem / $totalOrdersSystem) * 100 : 0;
+
+        // Lý do hủy đơn
+        $cancelReasons = Order::where('status', 4)
+            ->select('message', DB::raw('count(*) as count'))
+            ->groupBy('message')
+            ->get();
+
+        // Tìm lý do hủy phổ biến nhất
+        $mostCommonCancelReason = $cancelReasons->sortByDesc('count')->first();
+
         // Dữ liệu trả về view
         $data = [
             'total_orders' => $totalOrders,
@@ -343,6 +384,27 @@ class ThongkeController extends Controller
             'cancel_rate' => $cancelRate,
             'online_payment_rate' => $onlinePaymentRate,
             'cod_payment_rate' => $codPaymentRate,
+            'total_orders_this_month' => $totalOrdersThisMonth,
+            'canceled_orders_this_month' => $canceledOrdersThisMonth,
+            'completed_orders_this_month' => $completedOrdersThisMonth,
+            'online_payment_orders_this_month' => $onlinePaymentOrdersThisMonth,
+            'cod_payment_orders_this_month' => $codPaymentOrdersThisMonth,
+            'completion_rate_this_month' => $completionRateThisMonth,
+            'cancel_rate_this_month' => $cancelRateThisMonth,
+            'online_payment_rate_this_month' => $onlinePaymentRateThisMonth,
+            'cod_payment_rate_this_month' => $codPaymentRateThisMonth,
+            'total_orders_system' => $totalOrdersSystem,
+            'canceled_orders_system' => $canceledOrdersSystem,
+            'completed_orders_system' => $completedOrdersSystem,
+            'online_payment_orders_system' => $onlinePaymentOrdersSystem,
+            'cod_payment_orders_system' => $codPaymentOrdersSystem,
+            'completion_rate_system' => $completionRateSystem,
+            'cancel_rate_system' => $cancelRateSystem,
+            'online_payment_rate_system' => $onlinePaymentRateSystem,
+            'cod_payment_rate_system' => $codPaymentRateSystem,
+            'other_status_orders_system' => $otherStatusOrdersSystem, // Thêm biến đếm các đơn hàng có trạng thái ngoài hoàn thành và hủy
+            'cancel_reasons' => $cancelReasons,
+            'most_common_cancel_reason' => $mostCommonCancelReason ? $mostCommonCancelReason->message : null,
         ];
 
         // Nếu request là AJAX, trả về view đã render
