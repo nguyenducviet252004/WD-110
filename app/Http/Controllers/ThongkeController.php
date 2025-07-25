@@ -364,6 +364,15 @@ class ThongkeController extends Controller
         $onlinePaymentRateSystem = $totalOrdersSystem > 0 ? ($onlinePaymentOrdersSystem / $totalOrdersSystem) * 100 : 0;
         $codPaymentRateSystem = $totalOrdersSystem > 0 ? ($codPaymentOrdersSystem / $totalOrdersSystem) * 100 : 0;
 
+        // Lý do hủy đơn
+        $cancelReasons = Order::where('status', 4)
+            ->select('message', DB::raw('count(*) as count'))
+            ->groupBy('message')
+            ->get();
+
+        // Tìm lý do hủy phổ biến nhất
+        $mostCommonCancelReason = $cancelReasons->sortByDesc('count')->first();
+
         // Dữ liệu trả về view
         $data = [
             'total_orders' => $totalOrders,
@@ -394,6 +403,8 @@ class ThongkeController extends Controller
             'online_payment_rate_system' => $onlinePaymentRateSystem,
             'cod_payment_rate_system' => $codPaymentRateSystem,
             'other_status_orders_system' => $otherStatusOrdersSystem, // Thêm biến đếm các đơn hàng có trạng thái ngoài hoàn thành và hủy
+            'cancel_reasons' => $cancelReasons,
+            'most_common_cancel_reason' => $mostCommonCancelReason ? $mostCommonCancelReason->message : null,
         ];
 
         // Nếu request là AJAX, trả về view đã render
