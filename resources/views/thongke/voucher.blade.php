@@ -75,3 +75,67 @@
         </tbody>
     </table>
 </div>
+
+<style>
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        background-color: #fff;
+        border-collapse: collapse;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-bordered {
+        border: 1px solid #ddd;
+    }
+
+    .table th, .table td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+
+    .table td {
+        color: #495057;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    h3, h4 {
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    h4 {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .voucher-statistics, .voucher-system-summary {
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        margin-bottom: 30px;
+    }
+
+    .text-primary {
+        color: #007bff;
+    }
+
+    .mt-5, .mb-5, .mt-4, .mb-4, .mt-3, .mb-3 {
+        margin-top: 1.25rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+</style>
