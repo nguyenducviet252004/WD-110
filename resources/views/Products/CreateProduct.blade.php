@@ -97,3 +97,4 @@
             <a href="{{ route('products.index') }}" class="btn btn-secondary">Quay lại</a>
         </div>
     </form>
+@endsection
