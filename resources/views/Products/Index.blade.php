@@ -165,4 +165,51 @@
         {{ $products->appends(['status' => request()->get('status')])->links() }}
     </div>
 
+    <div class="d-flex justify-content-center mt-4">
+        {{ $products->appends(['status' => request()->get('status')])->links() }}
+    </div>
+
+    <style>
+        .gallery-image {
+            width: 40px;
+            height: 40px;
+            margin: 2px;
+            border-radius: 5px;
+        }
+
+        .color-circle {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        /* Đặt chiều dài tối đa cho cột mô tả */
+        .description {
+            max-width: 400px;
+            /* Thay đổi chiều rộng tối đa theo yêu cầu */
+            white-space: nowrap;
+            /* Không cho phép xuống dòng */
+            overflow: hidden;
+            /* Ẩn phần văn bản thừa */
+            text-overflow: ellipsis;
+            /* Hiển thị ba chấm khi quá dài */
+            cursor: pointer;
+            /* Thêm con trỏ để người dùng biết là có thể hover */
+        }
+
+        /* Thanh cuộn ngang khi bảng có nhiều cột */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-responsive table {
+            width: 100%;
+            min-width: 1000px;
+            /* Đảm bảo rằng bảng sẽ rộng hơn khi có nhiều cột */
+        }
+    </style>
+
 @endsection
