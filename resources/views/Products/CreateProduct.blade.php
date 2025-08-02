@@ -97,4 +97,99 @@
             <a href="{{ route('products.index') }}" class="btn btn-secondary">Quay lại</a>
         </div>
     </form>
+
+    <!-- Xem trước ảnh đại diện -->
+    <script>
+        function previewImage() {
+            const fileInput = document.getElementById('avatar');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                // Chạy khi file đã được đọc xong
+                reader.onload = function(event) {
+                    const imagePreview = document.getElementById('imagePreview');
+                    imagePreview.src = event.target.result; // Đặt ảnh đã chọn vào thẻ <img>
+
+                    // Hiển thị vùng chứa hình ảnh
+                    document.getElementById('imagePreviewContainer').style.display = 'block';
+                }
+
+                // Đọc file ảnh dưới dạng Data URL
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+    <!-- Xem trước hình ảnh -->
+    <script>
+        const imageInput = document.getElementById('image-input');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imageCount = document.getElementById('image-count');
+
+        imageInput.addEventListener('change', function() {
+            const files = Array.from(imageInput.files);
+            imageCount.textContent = `Đã chọn ${files.length} ảnh`;
+            imagePreviewContainer.innerHTML = ''; // Xóa ảnh xem trước trước đó
+
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imagePreview = document.createElement('div');
+                    imagePreview.classList.add('image-preview');
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('preview-img');
+
+                    // Tạo nút xóa trên ảnh
+                    const deleteButton = document.createElement('button');
+                    deleteButton.classList.add('delete-btn');
+                    deleteButton.innerHTML = 'X';
+                    deleteButton.addEventListener('click', () => {
+                        imagePreview.remove();
+                        files.splice(index, 1); // Xóa tệp khỏi danh sách
+                        imageCount.textContent = `Đã chọn ${files.length} ảnh`;
+                    });
+
+                    imagePreview.appendChild(img);
+                    imagePreview.appendChild(deleteButton);
+                    imagePreviewContainer.appendChild(imagePreview);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+
+    <!-- CSS cho phần xem trước hình ảnh -->
+    <style>
+        .image-preview {
+            position: relative;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .preview-img {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+        }
+    </style>
+
 @endsection
