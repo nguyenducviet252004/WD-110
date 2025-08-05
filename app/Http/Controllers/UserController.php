@@ -19,4 +19,8 @@ class UserController extends Controller
         return view('user.dashboard', ['token' => $token]);
     }
 
+    public function changepass()
+    {
+        return view('user.changepass');
+    }
 }
