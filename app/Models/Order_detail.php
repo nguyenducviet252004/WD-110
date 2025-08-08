@@ -40,6 +40,3 @@ class Order_detail extends Model
         return $this->belongsTo(Color::class, 'color_id');
     }
 }
-
-}
-
