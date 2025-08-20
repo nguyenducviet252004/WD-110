@@ -173,3 +173,5 @@ public function show($userId)
 
         return response()->json(["status" => "error", "message" => "No shipping address found"], 404);
     }
+
+    

@@ -50,3 +50,19 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
     }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Category $category)
+    {
+    }
+
+    public function productsByCategory($categoryId)
+    {
+        // Lấy sản phẩm của một danh mục
+        $category = Category::findOrFail($categoryId);
+        $products = Product::where('category_id', $categoryId)->get();
+        return response()->json($products);
+    }
+}
