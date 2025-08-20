@@ -139,3 +139,22 @@ public function show($userId)
             return response()->json(['message' => 'Error occurred: ' . $e->getMessage()], 404);
         }
     }
+    public function logout(Request $request)
+    {
+        try {
+            // Retrieve the authenticated user
+            $user = Auth::user();
+
+            // Revoke all of the user's tokens
+            $user->tokens->each(function ($token) {
+                $token->delete();
+            });
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Đăng xuất thành công'
+            ], 200);
+        } catch (Throwable $e) {
+            return response()->json(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()], 500);
+        }
+    }
