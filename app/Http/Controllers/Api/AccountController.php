@@ -103,5 +103,34 @@ class AccountController extends Controller
         }
     }
 
-    
+     public function show($userId)
+    {
+        try {
+            $user = User::with('shipAddresses')->find($userId);
+
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+            $token = substr($user->createToken('API Token')->plainTextToken, 3);
+
+            $user->avatar = asset('storage/' . $user->avatar);
+
+            $filePath = storage_path('app/user_' . $userId . '.txt');
+
+            if (file_exists($filePath)) {
+                $data = json_decode(file_get_contents($filePath), true);
+                $data['token'] = $token;
+                $data['user'] = $user;
+
+                return response()->json($data);
+            }
+            return response()->json([
+                'token' => $token,
+                'user' => $user
+            ]);
+        } catch (Throwable $e) {
+            return response()->json(['message' => 'Error occurred: ' . $e->getMessage()], 404);
+        }
+    }
+
 }
