@@ -202,4 +202,16 @@ class CartController extends Controller
             return response()->json(['message' => 'Có lỗi xảy ra: ' . $e->getMessage()], 500); // Return error response
         }
     }
+
+     public function destroy($itemId)
+    {
+        try {
+            $cartItem = CartItem::findOrFail($itemId);
+            $cartItem->delete();
+
+            return response()->json(['message' => 'Sản phẩm đã được xóa khỏi giỏ hàng.'], 200); // Trả về mã 200 OK
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Có lỗi xảy ra: ' . $e->getMessage()], 500); // Trả về mã 500 Internal Server Error
+        }
+    }
 }
