@@ -90,4 +90,54 @@ class CartController extends Controller
             return response()->json(['message' => 'Có lỗi xảy ra: ' . $e->getMessage()], 500);
         }
     }
+
+      public function show($userId)
+    {
+        try {
+            // Lấy giỏ hàng của người dùng
+            $cart = Cart::where('user_id', $userId)->first();
+    
+            // Kiểm tra xem người dùng có giỏ hàng không
+            if (!$cart) {
+                return response()->json(['message' => 'Giỏ hàng không tồn tại.'], 404);
+            }
+    
+            // Lấy tất cả các sản phẩm trong giỏ hàng, kèm theo thông tin màu sắc và kích thước
+            $cartItems = CartItem::with(['product', 'color', 'size'])
+                ->where('cart_id', $cart->id)
+                ->get();
+    
+            // Kiểm tra nếu không có sản phẩm nào trong giỏ hàng
+            if ($cartItems->isEmpty()) {
+                return response()->json(['message' => 'Giỏ hàng không có sản phẩm.'], 404);
+            }
+    
+            // Tạo dữ liệu trả về cho tất cả sản phẩm trong giỏ hàng
+            $responseData = $cartItems->map(function ($cartItem) {
+                $colorName = $cartItem->color ? $cartItem->color->name_color : null;  // Lấy tên màu
+                $sizeName = $cartItem->size ? $cartItem->size->size : null;  // Lấy tên size
+    
+                return [
+                    'id' => $cartItem->id,
+                    'product_id' => $cartItem->product_id,
+                    'product_name' => $cartItem->product->name,
+                    'avatar' => $cartItem->product->avatar,
+                    'color' => $colorName,
+                    'size' => $sizeName,
+                    'quantity' => $cartItem->quantity,
+                    'price' => $cartItem->price,
+                    'total' => $cartItem->total,
+                ];
+            });
+    
+            return response()->json([
+                'status' => true,
+                'cart_items' => $responseData,
+                'message' => 'Thông tin giỏ hàng của người dùng.'
+            ], 200);
+    
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Có lỗi xảy ra: ' . $e->getMessage()], 500); // Trả về mã 500 Internal Server Error
+        }
+    }
 }
