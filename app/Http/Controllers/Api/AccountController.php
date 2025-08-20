@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ship_address;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -151,5 +152,20 @@ class AccountController extends Controller
         } catch (Throwable $e) {
             return response()->json(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()], 500);
         }
+    }
+    public function address(Request $request)
+    {
+        $userId = auth()->id(); // Lấy ID người dùng đang đăng nhập
+
+        $shipAddress = Ship_address::where('user_id', $userId)
+            ->orderByDesc('is_default') // Sắp xếp để ưu tiên địa chỉ mặc định
+            ->orderByDesc('created_at') // Sau đó ưu tiên bản ghi mới nhất
+            ->first(); // Lấy bản ghi đầu tiên
+
+        if ($shipAddress) {
+            return response()->json(["status" => "success", "data" => $shipAddress]);
+        }
+
+        return response()->json(["status" => "error", "message" => "No shipping address found"], 404);
     }
 }
