@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Laravel\Sanctum\PersonalAccessToken;
 use Throwable;
 
 class AccountController extends Controller
@@ -167,5 +169,51 @@ class AccountController extends Controller
         }
 
         return response()->json(["status" => "error", "message" => "No shipping address found"], 404);
+    }
+
+     public function checkAuth(Request $request)
+    {
+        // Lấy token từ cookie
+        $tokenFromCookie = $request->cookie('token');
+
+        // Xóa 4 ký tự đầu nếu token từ cookie tồn tại
+        if ($tokenFromCookie && strlen($tokenFromCookie) > 4) {
+            $tokenFromCookie = substr($tokenFromCookie, 4); // Xóa 4 ký tự đầu tiên
+        }
+
+        // Lấy token từ header
+        $tokenFromHeader = $request->header('Authorization');
+
+        // Nếu token từ header có dạng "Bearer token", tách ra để lấy token
+        if ($tokenFromHeader && preg_match('/Bearer\s(\S+)/', $tokenFromHeader, $matches)) {
+            $tokenFromHeader = $matches[1]; // Lấy phần token sau "Bearer "
+        }
+
+        // Chọn token từ cookie nếu có, nếu không thì lấy từ header
+        $token = $tokenFromCookie ?: $tokenFromHeader;
+
+        Log::info('Received token: ' . $token);
+
+        if (!$token) {
+            return response()->json(['authenticated' => false, 'message' => 'Token not provided.'], 401);
+        }
+
+        // Mã hóa token để so sánh
+        $hashedToken = hash('sha256', $token);
+        Log::info('Hashed token: ' . $hashedToken);
+
+        // Kiểm tra token trong bảng personal_access_tokens
+        $tokenRecord = PersonalAccessToken::where('token', $hashedToken)->first();
+
+        if ($tokenRecord) {
+            $user = $tokenRecord->tokenable;
+            return response()->json([
+                'authenticated' => true,
+                'user' => $user,
+                'role' => $user->role,
+            ]);
+        }
+
+        return response()->json(['authenticated' => false, 'message' => 'Invalid token.'], 401);
     }
 }
