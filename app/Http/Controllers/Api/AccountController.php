@@ -226,3 +226,22 @@ public function show($userId)
         if (!$token) {
             return response()->json(['authenticated' => false, 'message' => 'Token not provided.'], 401);
         }
+        // Mã hóa token để so sánh
+        $hashedToken = hash('sha256', $token);
+        Log::info('Hashed token: ' . $hashedToken);
+
+        // Kiểm tra token trong bảng personal_access_tokens
+        $tokenRecord = PersonalAccessToken::where('token', $hashedToken)->first();
+
+        if ($tokenRecord) {
+            $user = $tokenRecord->tokenable;
+            return response()->json([
+                'authenticated' => true,
+                'user' => $user,
+                'role' => $user->role,
+            ]);
+        }
+
+        return response()->json(['authenticated' => false, 'message' => 'Invalid token.'], 401);
+    }
+}
