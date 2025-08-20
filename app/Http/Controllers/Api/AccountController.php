@@ -158,3 +158,18 @@ public function show($userId)
             return response()->json(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()], 500);
         }
     }
+    public function address(Request $request)
+    {
+        $userId = auth()->id(); // Lấy ID người dùng đang đăng nhập
+
+        $shipAddress = Ship_address::where('user_id', $userId)
+            ->orderByDesc('is_default') // Sắp xếp để ưu tiên địa chỉ mặc định
+            ->orderByDesc('created_at') // Sau đó ưu tiên bản ghi mới nhất
+            ->first(); // Lấy bản ghi đầu tiên
+
+        if ($shipAddress) {
+            return response()->json(["status" => "success", "data" => $shipAddress]);
+        }
+
+        return response()->json(["status" => "error", "message" => "No shipping address found"], 404);
+    }
