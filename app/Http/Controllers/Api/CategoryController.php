@@ -31,3 +31,22 @@ class CategoryController extends Controller
     {
        
     }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Category $category)
+    {
+        try {
+            return response()->json($category);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Không thể lấy thông tin category: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Category $category)
+    {
+    }
