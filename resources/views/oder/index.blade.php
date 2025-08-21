@@ -4,6 +4,14 @@
     Danh sách đơn hàng
 @endsection
 @section('content_admin')
+    {{-- CSRF Token for AJAX requests --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- Include realtime CSS and JS --}}
+    <link rel="stylesheet" href="{{ asset('css/realtime-orders.css')}}">
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script src="{{ asset('js/realtime-orders.js') }}"></script>
+
     @if (session('success'))
         <div class="alert alert-success text-center">
             {{ session('success') }}
@@ -16,6 +24,18 @@
         </div>
     @endif
     <h1 class="text-center mt-5 mb-3">Danh sách đơn hàng</h1>
+
+    {{-- Thông báo hướng dẫn --}}
+    <div class="alert alert-info mx-3 mb-3">
+        <h6 class="alert-heading"><i class="fas fa-info-circle"></i> Hướng dẫn cập nhật trạng thái đơn hàng</h6>
+        <ul class="mb-0">
+            <li><strong>Quy tắc:</strong> Cập nhật trạng thái đơn hàng đúng theo quy trình từng bước</li>
+            <li><strong>Quy trình:</strong> Chờ xử lý -> Đã xử lý -> Đang vận chuyển -> Giao hàng thành công</li>
+            <li><strong>Hủy đơn:</strong> Chỉ được phép thao tác hủy trước khi vận chuyển đơn hàng</li>
+            <li><strong>Trả hàng:</strong> Chỉ được phép thao tác trả hàng sau khi đơn hàng đã giao</li>
+        </ul>
+    </div>
+
     <div class="d-flex justify-content-between px-3">
 
         <form action="{{ route('orders.index') }}" method="GET" class="mb-3">
@@ -49,7 +69,7 @@
                 </thead>
                 <tbody>
                     @foreach ($orders as $order)
-                        <tr>
+                        <tr data-order-id="{{ $order->id }}">
                             <td>{{ $order->id }}</td>
                             <td>{{ $order->user->email }}</td>
                             <td>
@@ -65,47 +85,88 @@
                                 <form action="{{ route('orders.index') }}" method="GET" style="width: 200px;"
                                     id="orderStatusForm-{{ $order->id }}">
                                     <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                    <select name="status" class="form-select" onchange="confirmAndSubmit(this)">
+                                    <select name="status" class="form-select" data-current-status="{{ $order->status}}" onchange="confirmAndSubmit(this, {{ $order->status }})">
                                         <option value="0" {{ $order->status == 0 ? 'selected' : '' }}
-                                            {{ $order->status != 0 ? 'disabled' : '' }}>
+                                            {{ !in_array(0, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
                                             Chờ xử lý
                                         </option>
                                         <option value="1" {{ $order->status == 1 ? 'selected' : '' }}
-                                            {{ $order->status >= 1 ? 'disabled' : '' }}>
+                                            {{ !in_array(1, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
                                             Đã xử lý
                                         </option>
                                         <option value="2" {{ $order->status == 2 ? 'selected' : '' }}
-                                            {{ $order->status >= 2 ? 'disabled' : '' }}>
+                                            {{ !in_array(2, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
                                             Đang vận chuyển
                                         </option>
                                         <option value="3" {{ $order->status == 3 ? 'selected' : '' }}
-                                            {{ $order->status >= 3 ? 'disabled' : '' }}>
+                                            {{ !in_array(3, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
                                             Giao hàng thành công
                                         </option>
                                         <option value="4" {{ $order->status == 4 ? 'selected' : '' }}
-                                            {{ $order->status == 4 ? 'disabled' : '' }}>
+                                            {{ !in_array(4, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
                                             Đã hủy
                                         </option>
                                         <option value="5" {{ $order->status == 5 ? 'selected' : '' }}
-                                            {{ $order->status == 5 ? 'disabled' : '' }}>
+                                            {{ !in_array(5, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
                                             Đã trả lại
                                         </option>
                                     </select>
                                 </form>
                                 <script>
-                                    function confirmAndSubmit(selectElement) {
-                                        const currentStatus = {{ $order->status }}; // Lấy trạng thái hiện tại từ backend
-                                        const selectedStatus = selectElement.value;
+                                    function confirmAndSubmit(selectElement, currentStatus) {
+                                        const selectedStatus = parseInt(selectElement.value);
 
-                                        // Nếu chọn trạng thái mới và muốn quay lại trạng thái cũ, hiển thị cảnh báo
-                                        if ((currentStatus >= 1 && selectedStatus <= currentStatus) || (currentStatus >= 3 && selectedStatus <=
-                                                currentStatus)) {
-                                            alert('Bạn không thể quay lại trạng thái cũ.');
-                                            selectElement.value = currentStatus; // Đặt lại giá trị trạng thái hiện tại
+                                        // Định nghĩa quy tắc chuyển đổi trạng thái
+                                        const allowedTransitions = {
+                                            0: [1, 4], // Chờ xử lý -> Đã xử lý hoặc hủy
+                                            1: [2, 4], // Đã xử lý -> Đang vận chuyển hoặc hủy
+                                            2: [3, 4], // Đang vẫn chuyển -> Giao hàng thành công hoặc hủy
+                                            3: [5],    // Giao hàng thành công -> Đã trả lại
+                                            4: [],     // Đã hủy -> Không thể chuyển
+                                            5: []      // Đã trả lại -> Không thể chuyển
+                                        };
+
+                                        // Kiểm tra xem có được phép chuyển không
+                                        if (!allowedTransitions[currentStatus].includes(selectedStatus)) {
+                                            const statusNames = {
+                                                0: 'Chờ xử lý',
+                                                1: 'Đã xử lý', 
+                                                2: 'Đang vận chuyển',
+                                                3: 'Giao hàng thành công',
+                                                4: 'Đã hủy',
+                                                5: 'Đã trả lại'
+                                            };
+                                            
+                                            const currentStatusName = statusNames[currentStatus] || 'Không xác định';
+                                            const newStatusName = statusNames[selectedStatus] || 'Không xác định';
+                                            
+                                            alert(`Không thể chuyển từ trạng thái '${currentStatusName}' sang '${newStatusName}'.\n\nQuy tắc cập nhật:\n• Chỉ có thể cập nhật từng bước một\n• Quy trình: Chờ xử lý → Đã xử lý → Đang vận chuyển → Giao hàng thành công\n• Có thể hủy đơn ở bất kỳ bước nào trước khi giao hàng thành công`);
+                                            
+                                            // Đặt lại giá trị về trạng thái hiện tại
+                                            selectElement.value = currentStatus;
                                             return;
                                         }
-
-                                        selectElement.form.submit(); // Nếu không có vấn đề, submit form
+                                        
+                                        // Xác nhận trước khi cập nhật
+                                        const statusNames = {
+                                            0: 'Chờ xử lý',
+                                            1: 'Đã xử lý', 
+                                            2: 'Đang vận chuyển',
+                                            3: 'Giao hàng thành công',
+                                            4: 'Đã hủy',
+                                            5: 'Đã trả lại'
+                                        };
+                                        
+                                        const currentStatusName = statusNames[currentStatus] || 'Không xác định';
+                                        const newStatusName = statusNames[selectedStatus] || 'Không xác định';
+                                        
+                                        if (confirm(`Xác nhận cập nhật trạng thái đơn hàng từ '${currentStatusName}' sang '${newStatusName}'?`)) {
+                                            selectElement.form.submit();
+                                        } else {
+                                            // Đặt lại giá trị về trạng thái hiện tại nếu không xác nhận
+                                            selectElement.value = currentStatus;
+                                        }
+                                        
                                     }
                                 </script>
 
