@@ -4,30 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
-class Review extends Model
+class Gallery extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
-        'order_id',
         'product_id',
         'image_path',
-        'rating',
-        'comment',
-        'status',
     ];
-
-    public function user()
+    public function getImagePathAttribute()
     {
-        return $this->belongsTo(User::class);
+        return Storage::url($this->attributes['image_path']);
     }
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
-
     public function product()
     {
         return $this->belongsTo(Product::class);

@@ -6,7 +6,17 @@
 
 @section('content_admin')
 
+    @if (session('success'))
+        <div class="alert alert-success text-center mt-5">
+            {{ session('success') }}
+        </div>
+    @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger text-center mt-5">
+            {{ session('error') }}
+        </div>
+    @endif
 
     <h1 class="text-center mt-5 mb-3">Danh sách sản phẩm</h1>
 
@@ -14,7 +24,7 @@
         style="font-size: 1.1em; padding: 10px 20px;">Thêm mới</a>
 
     <div class="d-flex gap-3 mb-4">
-        <!-- Price Order Filter -->
+        <!-- Sắp xếp theo giá -->
         <form style="width: 200px;" method="GET" action="{{ route('products.index') }}">
             <select style="padding: 10px;" name="price_order" class="form-control" onchange="this.form.submit()">
                 <option value="asc" {{ request('price_order') == 'asc' ? 'selected' : '' }}>Giá tăng dần</option>
@@ -22,7 +32,7 @@
             </select>
         </form>
 
-        <!-- Status Filter -->
+        <!-- Trạng thái -->
         <form style="width: 200px;" method="GET" action="{{ route('products.index') }}">
             <select style="padding: 10px;" name="is_active" class="form-control" onchange="this.form.submit()">
                 <option value="">Tất cả</option>
@@ -31,7 +41,7 @@
             </select>
         </form>
 
-        <!-- Price Range Filter -->
+        <!-- Mức giá -->
         <form style="width: 200px;" method="GET" action="{{ route('products.index') }}">
             <select style="padding: 10px;" name="price_range" class="form-control" onchange="this.form.submit()">
                 <option value="">Chọn mức giá</option>
@@ -53,19 +63,15 @@
                     <tr>
                         <th>STT</th>
                         <th>Tên</th>
-                        <th>Slug</th>
-                        <th>SKU</th>
-<th>Danh mục</th>
+                        <th>Danh mục</th>
                         <th>Đại diện</th>
-                        <th>Giá gốc</th>
-                        <th>Giá KM</th>
-                        <th>Tổng số lượng</th>
-                        <th>Lượt xem</th>
+                        <th>Số lượng</th>
+                        <th>Bán</th>
+                        <th>Giá</th>
                         <th>Mô tả</th>
-                        <th>Mô tả chi tiết</th>
                         <th>Thư viện</th>
-                        <!-- <th>Kích cỡ</th>
-                        <th>Màu sắc</th> -->
+                        <th>Kích cỡ</th>
+                        <th>Màu sắc</th>
                         <th>Thao tác</th>
                     </tr>
                 </thead>
@@ -74,66 +80,51 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $item->name }}</td>
-                            <td>{{ $item->slug }}</td>
-                            <td>{{ $item->sku }}</td>
+                            <td>{{ $item->categories->name }}</td>
                             <td>
-                                @if($item->category)
-                                    {{ $item->category->name }}
-                                @else
-                                    Không có danh mục
-                                @endif
+                                <img src="{{ asset('storage/' . $item->avatar) }}" alt="{{ $item->name }}"
+                                    style="width: 40px; height: 30px; border-radius: 8px;">
                             </td>
-                            <td>
-                                @if($item->thumb_image)
-                                    <img src="{{ $item->thumb_image }}" alt="{{ $item->name }}"
-                                        style="width: 40px; height: 30px; border-radius: 8px; object-fit: cover;">
-                                @else
-                                    <span class="text-muted">không có ảnh</span>
-                                @endif
-                            </td>
-                            <td>{{ number_format($item->price_regular) }} VND</td>
-                            <td>{{ number_format($item->price_sale) }} VND</td>
-                            <td>
-                                {{ $item->variants->sum('quantity') }}
-                            </td>
-                            <!-- <td>{{ $item->sell_quantity ?? '-' }}</td> -->
-                            <td>{{ $item->views ?? 0 }}</td>
+                            <td>{{ number_format($item->quantity) }}</td>
+                            <td>{{ number_format($item->sell_quantity) }}</td>
+                            <td>{{ number_format($item->price) }} VND</td>
                             <td class="description" data-description="{{ $item->description }}">
                                 {{ Str::limit($item->description, 30) }}</td>
-                            <td>{{ Str::limit($item->content, 30) }}</td>
+
+                            <!-- Modal cho mô tả -->
+                            <div id="descriptionModal" class="description-modal">
+                                <div class="description-content"></div>
+                            </div>
+
                             <td>
-                                @php $hasGallery = false; @endphp
-                                @foreach ($item->variants as $variant)
-                                    @if (!empty($variant->image))
-                                        @php $hasGallery = true; @endphp
-                                        <img src="{{ asset('storage/' . $variant->image) }}" alt="Variant Image" class="gallery-image"
-                                            style="width: 40px; height: 30px; border-radius: 5px;">
-@endif
-                                @endforeach
-                                @if (!$hasGallery)
-                                    không có ảnh
-                                @endif
-                            </td>
-                            <!-- <td>
-                                @php $sizes = $item->variants->pluck('size.size')->unique()->filter(); @endphp
-                                @if ($sizes->isNotEmpty())
-                                    @foreach ($sizes as $size)
-                                        <!-- <span class="badge bg-info text-dark" style="margin-right: 3px;">{{ $size }}</span>
-                                    @endforeach
+                                @if ($item->galleries->isNotEmpty())
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach ($item->galleries as $gallery)
+                                            <img src="{{ $gallery->image_path }}" alt="Gallery Image" class="gallery-image"
+                                                style="width: 40px; height: 30px; border-radius: 5px;">
+                                        @endforeach
+                                    </div>
                                 @else
-                                    <span class="text-muted">không có kích thước</span>
+                                    Không có ảnh
                                 @endif
                             </td>
                             <td>
-                                @php $colors = $item->variants->pluck('color.name_color')->unique()->filter(); @endphp
-                                @if ($colors->isNotEmpty())
-                                    @foreach ($colors as $color)
-                                        <span class="badge bg-success text-light" style="margin-right: 3px;">{{ $color }}</span>
+                                @if ($item->sizes->isNotEmpty())
+                                    {{ $item->sizes->pluck('size')->implode(', ') }}
+                                @else
+                                    Không có kích thước
+                                @endif
+                            </td>
+                            <td>
+                                @if ($item->colors->isNotEmpty())
+                                    @foreach ($item->colors as $color)
+                                        <span>{{ $color->name_color }}</span>@if (!$loop->last), @endif
                                     @endforeach
                                 @else
-                                    <span class="text-muted">không có màu</span>
+                                    Không có màu
                                 @endif
-                            </td> --> -->
+                            </td>
+
                             <td class="d-flex gap-2 justify-content-center">
                                 @if ($item->is_active == 1)
                                     <a href="{{ route('products.edit', $item->id) }}"
@@ -144,14 +135,14 @@
                                         class="btn btn-outline-warning btn-sm">Cập nhật</a>
                                 @endif
 
-                                <!-- Toggle is_active (Hide/Show) -->
+                                <!-- Form cập nhật trạng thái -->
                                 <form action="{{ route('products.index') }}" method="GET" style="display: inline;">
                                     @csrf
                                     <input type="hidden" name="toggle_is_active" value="1">
                                     <input type="hidden" name="product_id" value="{{ $item->id }}">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm"
                                         onclick="return confirm('Bạn có chắc muốn thay đổi trạng thái ẩn/hiển thị sản phẩm này?')">
-{{ $item->is_active == 1 ? 'Ẩn' : 'Hiện' }}
+                                        {{ $item->is_active == 1 ? 'Ẩn' : 'Hiện' }}
                                     </button>
                                 </form>
 
@@ -172,9 +163,11 @@
 
     <div class="d-flex justify-content-center mt-4">
         {{ $products->appends(['status' => request()->get('status')])->links() }}
-
     </div>
 
+    <div class="d-flex justify-content-center mt-4">
+        {{ $products->appends(['status' => request()->get('status')])->links() }}
+    </div>
 
     <style>
         .gallery-image {
@@ -218,4 +211,5 @@
             /* Đảm bảo rằng bảng sẽ rộng hơn khi có nhiều cột */
         }
     </style>
+
 @endsection

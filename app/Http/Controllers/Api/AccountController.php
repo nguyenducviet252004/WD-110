@@ -7,6 +7,7 @@ use App\Models\Ship_address;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,15 @@ use Throwable;
 class AccountController extends Controller
 {
 
+
+
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Laravel\Sanctum\PersonalAccessToken;
+use Throwable;
+
+class AccountController extends Controller
+{
 
     public function register(Request $request)
     {
@@ -53,7 +63,12 @@ class AccountController extends Controller
             return back()->with('error', $e->getMessage());
         }
     }
+
     public function login(Request $request)
+
+
+     public function login(Request $request)
+
     {
         try {
             // Validate input
@@ -109,8 +124,11 @@ class AccountController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
-    
+
 public function show($userId)
+
+     public function show($userId)
+
     {
         try {
             $user = User::with('shipAddresses')->find($userId);
@@ -139,6 +157,7 @@ public function show($userId)
             return response()->json(['message' => 'Error occurred: ' . $e->getMessage()], 404);
         }
     }
+
     public function logout(Request $request)
     {
         try {
@@ -174,7 +193,11 @@ public function show($userId)
         return response()->json(["status" => "error", "message" => "No shipping address found"], 404);
     }
 
+
     public function checkAuth(Request $request)
+
+     public function checkAuth(Request $request)
+
     {
         // Lấy token từ cookie
         $tokenFromCookie = $request->cookie('token');
@@ -200,7 +223,7 @@ public function show($userId)
         if (!$token) {
             return response()->json(['authenticated' => false, 'message' => 'Token not provided.'], 401);
         }
-        
+
         // Mã hóa token để so sánh
         $hashedToken = hash('sha256', $token);
         Log::info('Hashed token: ' . $hashedToken);
