@@ -23,5 +23,21 @@ class PassWordController extends Controller
             return response()->json([
                 'message' => 'Validation error.',
                 'errors' => $validator->errors()
-            ], 401);
+            ], 422);
         }
+// Send the reset link
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json([
+                'message' => 'Password reset link sent successfully. Please check your email.'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Failed to send password reset link. Email not found.'
+            ], 404);
+        }
+    }
+}
