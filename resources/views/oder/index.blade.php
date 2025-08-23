@@ -106,10 +106,10 @@
                                             {{ !in_array(4, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
                                             Đã hủy
                                         </option>
-                                        <option value="5" {{ $order->status == 5 ? 'selected' : '' }}
+                                        {{-- <option value="5" {{ $order->status == 5 ? 'selected' : '' }}
                                             {{ !in_array(5, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
                                             Đã trả lại
-                                        </option>
+                                        </option> --}}
                                     </select>
                                 </form>
                                 <script>
@@ -120,10 +120,10 @@
                                         const allowedTransitions = {
                                             0: [1, 4], // Chờ xử lý -> Đã xử lý hoặc hủy
                                             1: [2, 4], // Đã xử lý -> Đang vận chuyển hoặc hủy
-                                            2: [3, 4], // Đang vẫn chuyển -> Giao hàng thành công hoặc hủy
+                                            2: [3], // Đang vẫn chuyển -> Giao hàng thành công
                                             3: [5],    // Giao hàng thành công -> Đã trả lại
                                             4: [],     // Đã hủy -> Không thể chuyển
-                                            5: []      // Đã trả lại -> Không thể chuyển
+                                            // 5: []      // Đã trả lại -> Không thể chuyển
                                         };
 
                                         // Kiểm tra xem có được phép chuyển không
@@ -134,7 +134,7 @@
                                                 2: 'Đang vận chuyển',
                                                 3: 'Giao hàng thành công',
                                                 4: 'Đã hủy',
-                                                5: 'Đã trả lại'
+                                                // 5: 'Đã trả lại'
                                             };
                                             
                                             const currentStatusName = statusNames[currentStatus] || 'Không xác định';
@@ -154,7 +154,7 @@
                                             2: 'Đang vận chuyển',
                                             3: 'Giao hàng thành công',
                                             4: 'Đã hủy',
-                                            5: 'Đã trả lại'
+                                            // 5: 'Đã trả lại'
                                         };
                                         
                                         const currentStatusName = statusNames[currentStatus] || 'Không xác định';
