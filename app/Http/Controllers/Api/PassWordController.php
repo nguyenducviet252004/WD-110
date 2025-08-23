@@ -25,4 +25,3 @@ class PassWordController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        
