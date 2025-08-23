@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderStatusUpdated;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,19 +35,24 @@ class UserOrderController extends Controller
 
     public function show($id)
     {
-        // Retrieve the order by ID, including product and user relationships
-        $order = Order::with(['product', 'user'])->find($id);
+        // Lấy đơn hàng theo ID, kèm các quan hệ cần thiết
+        $order = Order::with([
+            'orderDetails.product.categories',
+            'orderDetails.color',
+            'orderDetails.size',
+            'shipAddress',
+            'user',
+            'review'
+        ])->find($id);
 
-        // Check if the order exists
+        // Kiểm tra tồn tại
         if (!$order) {
             return back()->with('error', 'Đơn hàng không tồn tại.');
         }
 
-        // Flash the order data to the session
-        session(['selected_order' => $order]);
-
-        // Redirect to the index view to display the selected order details
-        return redirect()->route('userorder.show')->with('message', 'Chi tiết đơn hàng đã được hiển thị.');
+        // Trả về view chi tiết đơn hàng
+        return view('user.orderdetail', compact('order'));
+        
     }
 
     public function update(Request $request, $orderId)
@@ -54,12 +61,12 @@ class UserOrderController extends Controller
             // Retrieve the order
             $order = Order::where('id', $orderId)
                 ->where('user_id', Auth::id())
-                ->whereIn('status', [0, 1]) // Allow canceling when pending or processed
+                ->whereIn('status', [0, 1, 2]) // Cho phép hủy khi chưa giao (0: chờ xử lý, 1: đã xử lý, 2: chuẩn bị giao)
                 ->first();
 
 
             if (!$order) {
-                return response()->json(['message' => 'Đơn hàng không tồn tại '], 404);
+                return back()->with('error', 'Đơn hàng không tồn tại hoặc không thể hủy.');
             }
 
             // Retrieve the cancellation reason and add custom message if provided
@@ -77,19 +84,25 @@ class UserOrderController extends Controller
 
             // Retrieve each order detail and adjust product quantities
             foreach ($order->orderDetails as $orderDetail) {
-                $product = Product::find($orderDetail->product_id);
+                // Restore quantity for the specific product variant
+                $variant = ProductVariant::where('product_id', $orderDetail->product_id)
+                    ->where('color_id', $orderDetail->color_id)
+                    ->where('size_id', $orderDetail->size_id)
+                    ->first();
 
-                if ($product) {
-                    // Increase the product's quantity and decrease the sold quantity
-                    $product->quantity += $orderDetail->quantity;
-                    $product->sell_quantity -= $orderDetail->quantity;
-                    $product->save();
+                if ($variant) {
+                    $variant->quantity += $orderDetail->quantity;
+                    $variant->save();
                 }
             }
 
             // Update order status to indicate it was canceled (set status to 4)
+            $oldStatus = $order->status;
             $order->status = 4; // Assuming 4 is for canceled orders
             $order->save();
+
+            // Broadcast event for realtime updates
+            event(new OrderStatusUpdated($order, $oldStatus, 4, 'user'));
 
             return back()->with('success', 'Hủy đơn hàng thành công, bạn có thể mua sắm lại.');
         } catch (\Exception $e) {
@@ -108,9 +121,13 @@ class UserOrderController extends Controller
         }
 
         // Cập nhật trạng thái đơn hàng thành "Hoàn thành" (status = 3)
+        $oldStatus = $order->status;
         $order->status = 3;
         $order->message = 'Hoàn thành';
         $order->save();
+
+        // Broadcast event for realtime updates
+        event(new OrderStatusUpdated($order, $oldStatus, 3, 'user'));
 
         // Gửi thông báo thành công và chuyển hướng
         return back()->with('success', 'Đơn hàng đã được xác nhận hoàn thành.');
