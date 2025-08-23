@@ -154,7 +154,107 @@
                         <span class="badge bg-secondary" style="font-size: 18px;">Đã trả lại</span>
                     @break
                 @endswitch
-            </p>            
+            </p>
+
+            <!-- Form đổi trạng thái đơn hàng - đồng bộ logic như trang tổng quát -->
+            <div class="d-flex justify-content-center mt-4 mb-4">
+                <form action="{{ route('orders.index') }}" method="GET" id="orderStatusForm" style="min-width:320px;max-width:400px;background:#f8f9fa;padding:24px 20px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                    <input type="hidden" name="order_id" value="{{ $order->id }}">
+                    <div class="mb-3">
+                        <label for="orderStatusSelect" class="form-label" style="font-weight:500;">Thay đổi trạng thái đơn hàng</label>
+                        <select name="status" class="form-select" id="orderStatusSelect" style="font-size:16px;border-radius:8px;"
+                            data-current-status="{{ $order->status }}" onchange="confirmAndSubmit(this, {{ $order->status }})">
+                            <option value="0" {{ $order->status == 0 ? 'selected' : '' }}
+                                {{ !in_array(0, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
+                                Chờ xử lý
+                            </option>
+                            <option value="1" {{ $order->status == 1 ? 'selected' : '' }}
+                                {{ !in_array(1, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
+                                Đã xử lý
+                            </option>
+                            <option value="2" {{ $order->status == 2 ? 'selected' : '' }}
+                                {{ !in_array(2, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
+                                Đang vận chuyển
+                            </option>
+                            <option value="3" {{ $order->status == 3 ? 'selected' : '' }}
+                                {{ !in_array(3, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
+                                Giao hàng thành công
+                            </option>
+                            <option value="4" {{ $order->status == 4 ? 'selected' : '' }}
+                                {{ !in_array(4, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
+                                Đã hủy
+                            </option>
+                            <option value="5" {{ $order->status == 5 ? 'selected' : '' }}
+                                {{ !in_array(5, \App\Helpers\OrderHelper::getNextAllowedStatuses($order->status)) ? 'disabled' : '' }}>
+                                Đã trả lại
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn" style="background:#20c997;color:#fff;font-weight:600;font-size:16px;border-radius:8px;padding:10px 0;width:100%;box-shadow:0 2px 8px rgba(32,201,151,0.08);transition:background 0.2s;">Cập nhật trạng thái</button>
+                </form>
+            </div>
+
+            <script>
+                function confirmAndSubmit(selectElement, currentStatus) {
+                    const selectedStatus = parseInt(selectElement.value);
+                    // Định nghĩa quy tắc chuyển đổi trạng thái
+                    const allowedTransitions = {
+                        0: [1, 4],
+                        1: [2, 4],
+                        2: [3],
+                        3: [5],
+                        4: [],
+                        5: []
+                    };
+                    if (!allowedTransitions[currentStatus].includes(selectedStatus)) {
+                        const statusNames = {
+                            0: 'Chờ xử lý',
+                            1: 'Đã xử lý',
+                            2: 'Đang vận chuyển',
+                            3: 'Giao hàng thành công',
+                            4: 'Đã hủy',
+                            5: 'Đã trả lại'
+                        };
+                        const currentStatusName = statusNames[currentStatus] || 'Không xác định';
+                        const newStatusName = statusNames[selectedStatus] || 'Không xác định';
+                        alert(`Không thể chuyển từ trạng thái '${currentStatusName}' sang '${newStatusName}'.\n\nQuy tắc cập nhật:\n• Chỉ có thể cập nhật từng bước một\n• Quy trình: Chờ xử lý → Đã xử lý → Đang vận chuyển → Giao hàng thành công\n• Có thể hủy đơn ở bất kỳ bước nào trước khi giao hàng thành công`);
+                        selectElement.value = currentStatus;
+                        return;
+                    }
+                    const statusNames = {
+                        0: 'Chờ xử lý',
+                        1: 'Đã xử lý',
+                        2: 'Đang vận chuyển',
+                        3: 'Giao hàng thành công',
+                        4: 'Đã hủy',
+                        5: 'Đã trả lại'
+                    };
+                    const currentStatusName = statusNames[currentStatus] || 'Không xác định';
+                    const newStatusName = statusNames[selectedStatus] || 'Không xác định';
+                    if (confirm(`Xác nhận cập nhật trạng thái đơn hàng từ '${currentStatusName}' sang '${newStatusName}'?`)) {
+                        selectElement.form.submit();
+                    } else {
+                        selectElement.value = currentStatus;
+                    }
+                }
+            </script>
+
+            <!-- Realtime cập nhật trạng thái -->
+            <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+            <script>
+                // Enable Pusher realtime
+                var pusher = new Pusher('{{ env('PUSHER_APP_KEY', 'your-pusher-key') }}', {
+                    cluster: '{{ env('PUSHER_APP_CLUSTER', 'ap1') }}',
+                    encrypted: true
+                });
+                var channel = pusher.subscribe('order-status');
+                channel.bind('App\\Events\\OrderStatusUpdated', function(data) {
+                    if (data.order_id == {{ $order->id }}) {
+                        // Reload page to update status
+                        location.reload();
+                    }
+                });
+            </script>
         </div>
 
         <div class="text-center">
