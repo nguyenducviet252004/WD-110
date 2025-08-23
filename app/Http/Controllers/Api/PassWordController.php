@@ -23,5 +23,5 @@ class PassWordController extends Controller
             return response()->json([
                 'message' => 'Validation error.',
                 'errors' => $validator->errors()
-            ], 422);
+            ], 401);
         }
