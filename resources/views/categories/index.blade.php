@@ -5,7 +5,17 @@
 @endsection
 
 @section('content_admin')
+    @if (session('success'))
+        <div class="alert alert-success text-center">
+            {{ session('success') }}
+        </div>
+    @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
 
     <h1 class="text-center mt-5">Danh sách danh mục</h1>
 
@@ -42,15 +52,15 @@
                     <td>{{ $category->created_at ? $category->created_at->format('d/m/Y H:i') : 'N/A' }}</td>
                     <td>{{ $category->updated_at ? $category->updated_at->format('d/m/Y H:i') : 'N/A' }}</td>
                     <td>
-                        <form action="{{ route('categories.toggle-status', $category->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            <button type="submit" onclick="return confirm('Bạn có chắc muốn cập nhật trạng thái?')"
-                                class="btn {{ $category->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }} mb-3">
-                                {{ $category->is_active ? 'Ẩn' : 'Hiện' }}
-                            </button>
-                        </form>
-                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-outline-warning mb-3">Cập nhật</a>
-                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display:inline;">
+                        <a onclick="return confirm('Bạn có chắc muốn cập nhật trạng thái?')"
+                            href="{{ route('categories.index', ['toggle_active' => $category->id]) }}"
+                            class="btn {{ $category->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }} mb-3">
+                            {{ $category->is_active ? 'Ẩn' : 'Hiện' }}
+                        </a>
+                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-outline-warning mb-3">Cập
+                            nhật</a>
+                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST"
+                            style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-outline-danger mb-3"
