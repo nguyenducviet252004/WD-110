@@ -7,7 +7,6 @@ use App\Models\Ship_address;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -16,18 +15,10 @@ use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\Sanctum;
 use Throwable;
-class AccountController extends Controller
-{
-
-
-
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Laravel\Sanctum\PersonalAccessToken;
-use Throwable;
 
 class AccountController extends Controller
 {
+
 
     public function register(Request $request)
     {
@@ -37,7 +28,7 @@ class AccountController extends Controller
             'password' => 'required|string|min:6',
             'confirmPassword' => 'required|same:password', // Ensure confirm_password matches password
         ]);
-    
+
         try {
             // Prepare user data
             $userData = [
@@ -45,10 +36,10 @@ class AccountController extends Controller
                 'password' => Hash::make($request->input('password')),  // Hash the password
                 'role' => $request->filled('role') ? $request->input('role') : 0,  // Default role is 0
             ];
-    
+
             // Create user
             $user = User::create($userData);
-    
+
             // Return success response
             return response()->json([
                 'status' => true,
@@ -57,18 +48,15 @@ class AccountController extends Controller
                     'email' => $user->email,
                 ]
             ], 200);
-    
+
         } catch (Throwable $e) {
             // Handle error
             return back()->with('error', $e->getMessage());
         }
     }
 
+
     public function login(Request $request)
-
-
-     public function login(Request $request)
-
     {
         try {
             // Validate input
@@ -76,13 +64,13 @@ class AccountController extends Controller
                 'email' => 'required|email',
                 'password' => 'required',
             ]);
-    
+
             // Kiểm tra xem có tồn tại tài khoản với email và mật khẩu không
             if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
-    
+
                 // Lấy thông tin người dùng đã đăng nhập
                 $user = Auth::user();
-    
+
                 // Kiểm tra trạng thái tài khoản
                 if ($user->is_active == 0) {
                     Auth::logout();  // Đảm bảo không có session nào được tạo
@@ -90,11 +78,11 @@ class AccountController extends Controller
                         'error' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.'
                     ], 403);
                 }
-    
+
                 /** @var User $user */
                 // Tạo token cho người dùng (để dùng ở React)
                 $token = $user->createToken('API Token')->plainTextToken;
-    
+
                 // Trả về dữ liệu người dùng và token
                 return response()->json([
                     'status' => true,
@@ -116,7 +104,7 @@ class AccountController extends Controller
                     ]
                 ], 200);
             }
-    
+
             return response()->json([
                 'error' => 'Tài khoản không tồn tại hoặc sai tài khoản, mật khẩu'
             ], 401);
@@ -125,10 +113,10 @@ class AccountController extends Controller
         }
     }
 
-public function show($userId)
 
-     public function show($userId)
 
+
+    public function show($userId)
     {
         try {
             $user = User::with('shipAddresses')->find($userId);
@@ -177,6 +165,7 @@ public function show($userId)
             return response()->json(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()], 500);
         }
     }
+
     public function address(Request $request)
     {
         $userId = auth()->id(); // Lấy ID người dùng đang đăng nhập
@@ -195,9 +184,6 @@ public function show($userId)
 
 
     public function checkAuth(Request $request)
-
-     public function checkAuth(Request $request)
-
     {
         // Lấy token từ cookie
         $tokenFromCookie = $request->cookie('token');
@@ -243,4 +229,3 @@ public function show($userId)
         return response()->json(['authenticated' => false, 'message' => 'Invalid token.'], 401);
     }
 }
-
