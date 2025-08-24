@@ -50,14 +50,14 @@ class OrderStatusUpdated implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'order_id'     => $this->order->id,
-            'user_id'      => $this->order->user_id,
-            'old_status'   => $this->oldStatus,
-            'new_status'   => $this->newStatus,
-            'status_text'  => $this->getStatusText($this->newStatus),
-            'updated_by'   => $this->updatedBy,
-            'updated_at'   => now()->toISOString(),
-            'message'      => $this->order->message,
+            'order_id' => $this->order->id,
+            'user_id' => $this->order->user_id,
+            'old_status' => $this->oldStatus,
+            'new_status' => $this->newStatus,
+            'status_text' => $this->getStatusText($this->newStatus),
+            'updated_by' => $this->updatedBy,
+            'updated_at' => now()->toISOString(),
+            'message' => $this->order->message,
         ];
     }
 
@@ -74,6 +74,7 @@ class OrderStatusUpdated implements ShouldBroadcast
             4 => 'Đã hủy',
             5 => 'Đã trả lại'
         ];
+
         return $statusMap[$status] ?? 'Không xác định';
     }
 }
