@@ -1,0 +1,51 @@
+/* AdminLTE Compatibility Overrides */
+.content-wrapper {
+    margin-left: 280px !important;
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+}
+
+/* Override AdminLTE default styles */
+.card {
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.btn {
+    border-radius: var(--radius-lg) !important;
+}
+
+.form-control {
+    border-radius: var(--radius-lg) !important;
+    border: 2px solid var(--border-color) !important;
+}
+
+.table {
+    border-radius: var(--radius-xl) !important;
+    overflow: hidden !important;
+}
+
+/* Ensure modern styles take precedence */
+.modern-card {
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.btn-modern {
+    border: none !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.form-control-modern {
+    border: 2px solid var(--border-color) !important;
+    box-shadow: none !important;
+}
+
+.table-modern {
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+}

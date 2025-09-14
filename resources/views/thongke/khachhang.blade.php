@@ -15,7 +15,8 @@
                 @foreach ($data['filtered_customers'] as $customer)
                     <tr>
                         <td>{{ $customer->email }}</td>
-                        <td><img src="{{ asset('storage/' . $customer->avatar) }}" alt="Avatar" width="50" height="50"></td>
+                        <td><img src="{{ asset('storage/' . $customer->avatar) }}" alt="Avatar" width="50"
+                                height="50"></td>
                         <td>{{ $customer->order_count }}</td>
                     </tr>
                 @endforeach
@@ -40,17 +41,18 @@
                 @foreach ($data['top_customers_this_month'] as $customer)
                     <tr>
                         <td>{{ $customer->email }}</td>
-                        <td><img src="{{ asset('storage/' . $customer->avatar) }}" alt="Avatar" width="50" height="50"></td>
+                        <td><img src="{{ asset('storage/' . $customer->avatar) }}" alt="Avatar" width="50"
+                                height="50"></td>
                         <td>{{ $customer->order_count }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     @else
-        <p>Không có dữ liệu khách hàng trong tháng này.</p>
+        <p>Không có dữ liệu khách hàng mua hàng trong tháng này.</p>
     @endif
 
-    {{-- Thống kê khách hàng mua nhiều nhất toàn hệ thống --}}
+    <!-- Thống kê khách hàng mua nhiều nhất toàn hệ thống -->
     @if ($data['top_customers_all_time']->isNotEmpty())
         <h4>Khách hàng mua nhiều nhất toàn hệ thống</h4>
         <table class="table table-striped table-bordered mb-5">
@@ -65,13 +67,15 @@
                 @foreach ($data['top_customers_all_time'] as $customer)
                     <tr>
                         <td>{{ $customer->email }}</td>
-                        <td><img src="{{ asset('storage/' . $customer->avatar) }}" alt="Avatar" width="50" height="50"></td>
+                        <td><img src="{{ asset('storage/' . $customer->avatar) }}" alt="Avatar" width="50"
+                                height="50"></td>
                         <td>{{ $customer->order_count }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     @else
-        <p>Không có dữ liệu khách hàng trong toàn hệ thống.</p>
+        <p>Không có dữ liệu khách hàng mua hàng toàn hệ thống.</p>
     @endif
+
 </div>

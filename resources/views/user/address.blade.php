@@ -15,6 +15,7 @@
         @foreach ($addresses as $address)
             <li class="list-group-item {{ $address->is_default ? 'list-group-item-primary' : '' }}">
                 <strong>Tên người nhận:</strong> {{ $address->recipient_name }}<br>
+                <strong>Người gửi:</strong> {{ $address->sender_name }}<br>
                 <strong>Địa chỉ:</strong> {{ $address->ship_address }}<br>
                 <strong>Số điện thoại:</strong> {{ $address->phone_number }}<br>
                 @if ($address->is_default)

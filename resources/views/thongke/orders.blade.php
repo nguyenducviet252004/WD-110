@@ -1,4 +1,4 @@
-{{-- Bộ lọc --}}
+<!-- Bộ lọc -->
 <div class="card text-white bg-info h-100 mt-4">
     <div class="card-body">
         @if (isset($data['filtered_revenue']) && $data['filtered_revenue'] > 0)
@@ -15,9 +15,9 @@
     </div>
 </div>
 
-{{-- Doanh thu và đơn hàng - share thành 2 phần --}}
+<!-- Doanh Thu và Đơn Hàng - Chia Màn Hình Thành 2 Phần -->
 <div class="row mt-4 mb-4">
-    {{-- Doanh thu --}}
+    <!-- Doanh Thu -->
     <div class="col-md-6">
         <div class="card text-white bg-success h-100">
             <div class="card-body">
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    {{-- Đơn hàng --}}
+    <!-- Đơn Hàng -->
     <div class="col-md-6">
         <div class="card text-white bg-info h-100">
             <div class="card-body">
@@ -65,10 +65,10 @@
                 @if (isset($data['last_order_count']) && $data['last_order_count'] > 0)
                     <p class="card-text">{{ $data['last_order_count'] }} đơn</p>
                 @else
-                    <p class="card-text">Không có dữ liệu đơn hoàn thành tháng trước</p>
+                    <p class="card-text">Không có dữ liệu đơn hoàn thành tháng trước.</p>
                 @endif
 
-                <h5 class="card-title">Sự thay đổi về số lượng đơn</h5>
+                <h5 class="card-title">Sự Thay Đổi Số Lượng Đơn</h5>
                 <p class="card-text">
                     <span class="font-weight-bold">{{ $data['order_count_change'] }} đơn</span>
                     @if ($data['order_count_change'] > 0)

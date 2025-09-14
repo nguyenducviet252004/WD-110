@@ -2,7 +2,7 @@
     <div class="card-body">
         <h5 class="card-title">Số lượng người dùng mới</h5>
 
-        {{-- Người dùng mới theo bộ lọc --}}
+        <!-- Dòng 2: Người dùng mới theo bộ lọc -->
         <p class="card-text">
             @if ($data['filtered_count'] > 0)
                 <span class="text-warning font-weight-bold">
@@ -18,12 +18,13 @@
             @endif
         </p>
 
-        {{-- Người dùng mới tháng này --}}
+
+        <!-- Dòng 1: Người dùng mới trong tháng này -->
         <p class="card-text">Người dùng mới tháng này:
             <span class="font-weight-bold">{{ $data['current_count'] }}</span>
         </p>
 
-        {{-- Người dùng mới tháng trước --}}
+        <!-- Dòng 3: Người dùng mới trong tháng trước -->
         <p class="card-text">Người dùng mới tháng trước:
             <span class="font-weight-bold">{{ $data['last_count'] }}</span>
         </p>

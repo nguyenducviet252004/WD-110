@@ -19,7 +19,7 @@
 
     <h1 class="text-center mt-5">Thêm mới voucher</h1>
 
-    <form method="POST" action="{{ route('vouchers.store') }}" enctype="multipart/form-data" class="container">
+    <form method="POST" action="{{ route('vouchers.store') }}" enctype="multipart/form-data" class="container" novalidate>
         @csrf
 
         <div class="mb-3">
@@ -28,7 +28,9 @@
             <input type="text" class="form-control" name="code" id="code" value="{{ old('code') }}" required>
             <button type="button" class="btn btn-secondary mt-2" style="width: 300px" id="generateCodeBtn">Tạo mã ngẫu
                 nhiên</button>
-
+            @error('code')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
@@ -36,7 +38,9 @@
 
             <input type="text" placeholder="exam: 100.000 VND" class="form-control" name="discount_value"
                 id="discount_value" value="{{ old('discount_value') }}" required />
-
+            @error('discount_value')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
@@ -44,7 +48,9 @@
 
             <input type="text" placeholder="exam: 100.000 VND" class="form-control" name="total_min" id="discount_value"
                 value="{{ old('total_min') }}" required />
-
+            @error('total_min')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
@@ -52,14 +58,18 @@
 
             <input type="text" placeholder="exam: 100.000 VND" class="form-control" name="total_max" id="discount_value"
                 value="{{ old('total_max') }}" required />
-
+            @error('total_max')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
             <label for="description" class="col-2 col-form-label">Mô tả</label>
 
             <textarea class="form-control" name="description" id="description"s="5">{{ old('description') }}</textarea>
-
+            @error('description')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
@@ -67,7 +77,9 @@
 
             <input type="number" class="form-control" name="quantity" id="quantity" value="{{ old('quantity', 1) }}"
                 required>
-
+            @error('quantity')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
@@ -82,14 +94,18 @@
             <label for="start_day" class="col-2 col-form-label">Ngày bắt đầu</label>
 
             <input type="date" class="form-control" name="start_day" id="start_day" value="{{ old('start_day') }}">
-
+            @error('start_day')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
             <label for="end_day" class="col-2 col-form-label">Ngày kết thúc</label>
 
             <input type="date" class="form-control" name="end_day" id="end_day" value="{{ old('end_day') }}">
-
+            @error('end_day')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mb-3">
@@ -99,7 +115,9 @@
                 <option selected value="1">Đang hoạt động</option>
                 <option value="0" >Không hoạt động</option>
             </select>
-
+            @error('is_active')
+                <div class="text-danger mt-1">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="mt-3 mb-3 text-center">
