@@ -3,6 +3,7 @@
 @section('title')
     Cập nhật kích cỡ
 @endsection
+
 @section('content_admin')
     @if (session('success'))
         <div class="alert alert-success text-center">
@@ -25,8 +26,13 @@
             <div class="mb-3 row">
                 <label for="size" class="col-4 col-form-label">Kích cỡ</label>
 
-                <input type="text" class="form-control" name="size" id="size"
+                <input type="text" class="form-control @error('size') is-invalid @enderror" name="size" id="size"
                     value="{{ old('size', $size->size) }}" required />
+                @error('size')
+                    <div class="text-danger mt-1">
+                        {{ $message }}
+                    </div>
+                @enderror
 
             </div>
 

@@ -1,0 +1,151 @@
+/* Fix for missing fonts - Use Google Fonts as fallback */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+/* Material Design Icons - Use CDN fallback */
+@import url('https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css');
+
+/* Fallback font definitions */
+body {
+    font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Fix for Chart.js canvas context error */
+canvas {
+    display: block;
+    max-width: 100%;
+}
+
+/* Ensure chart containers have proper dimensions */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Fix for jQuery cookie error - provide fallback */
+.cookie-notice {
+    display: none;
+}
+
+/* Pusher connection status indicator */
+.pusher-status {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.pusher-status.connected {
+    background-color: #28a745;
+    color: white;
+}
+
+.pusher-status.disconnected {
+    background-color: #dc3545;
+    color: white;
+}
+
+.pusher-status.connecting {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+/* Fix for missing storage images */
+.storage-image {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* Error handling for missing resources */
+.error-fallback {
+    background-color: #f8f9fa;
+    border: 1px dashed #dee2e6;
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Fix for realtime notifications */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+}
+
+/* Ensure proper font loading */
+.font-loading {
+    font-display: swap;
+}
+
+/* Fallback for Material Design Icons */
+.mdi {
+    font-family: 'Material Design Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Fix for dashboard layout */
+.dashboard-container {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+    .notification-container {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .pusher-status {
+        bottom: 10px;
+        left: 10px;
+    }
+}

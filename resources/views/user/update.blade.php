@@ -7,16 +7,25 @@
 @section('content')
     <h1 class="text-center">Cập nhật tài khoản</h1>
 
-    <form action="{{ route('user.update') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('user.update') }}" method="POST" enctype="multipart/form-data" novalidate>
         @csrf
         <label for="fullname">Full Name</label>
         <input type="text" class="form-control mb-3" name="fullname" id="fullname" value="{{ old('fullname', Auth::user()->fullname) }}">
+        @error('fullname')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
 
         <label for="birth_day">Birth Day</label>
         <input type="date" class="form-control mb-3" name="birth_day" id="birth_day" value="{{ old('birth_day', Auth::user()->birth_day) }}">
+        @error('birth_day')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
 
         <label for="phone">Phone</label>
         <input type="text" class="form-control mb-3" name="phone" id="phone" value="{{ old('phone', Auth::user()->phone) }}">
+        @error('phone')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
 
         <label for="email">Email</label>
         <input type="email" class="form-control mb-3" name="email" id="email" value="{{ old('email', Auth::user()->email) }}">
@@ -38,6 +47,9 @@
         
         <label for="address">Address</label>
         <input type="text" class="form-control mb-3" name="address" id="address" value="{{ old('address', Auth::user()->address) }}">
+        @error('address')
+            <div class="text-danger mt-1">{{ $message }}</div>
+        @enderror
 
         <label for="ship_address">Ship Default</label>
         <a href="{{route('address.create')}}" class="btn badge bg-success ms-3 mb-2">Thêm mới</a>

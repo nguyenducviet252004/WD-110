@@ -5,7 +5,6 @@
 @endsection
 
 @section('content_admin')
-
     @if (session('success'))
         <div class="alert alert-success text-center mt-5">
             {{ session('success') }}
@@ -24,10 +23,10 @@
             <h5 class="text-muted">Sản phẩm: <strong>{{ $product->name }}</strong></h5>
         </div>
         <div>
-            <a href="{{ route('products.index') }}" class="btn btn-secondary me-2">
+            <a href="{{ route('products.index') }}" class="btn btn-modern btn-secondary me-2">
                 <i class="fas fa-arrow-left"></i> Quay lại danh sách
             </a>
-            <a href="{{ route('products.show', $product->id) }}" class="btn btn-info me-2">
+            <a href="{{ route('products.show', $product->id) }}" class="btn btn-modern btn-info me-2">
                 <i class="fas fa-eye"></i> Xem sản phẩm
             </a>
         </div>
@@ -76,13 +75,13 @@
     <!-- Action Buttons -->
     <div class="row mb-4">
         <div class="col-md-6">
-            <a href="{{ route('product-variants.create', $product->id) }}" class="btn btn-primary btn-lg me-3">
+            <a href="{{ route('product-variants.create', $product->id) }}" class="btn btn-modern btn-primary btn-lg me-3">
                 <i class="fas fa-plus"></i> Thêm biến thể mới
             </a>
         </div>
         <div class="col-md-6 text-end">
             @if ($variants->total() == 0)
-                <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#bulkCreateModal">
+                <button class="btn btn-modern btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#bulkCreateModal">
                     <i class="fas fa-magic"></i> Tạo tất cả biến thể
                 </button>
             @endif
@@ -91,81 +90,79 @@
 
     <!-- Variants Table -->
     @if ($variants->count() > 0)
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Danh sách biến thể ({{ $variants->total() }})</h5>
+        <div class="card modern-card">
+            <div class="card-header modern-card-header">
+                <h5 class="mb-0 modern-card-title">
+                    <i class="fas fa-list-alt me-2"></i>
+                    Danh sách biến thể ({{ $variants->total() }})
+                </h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
+                    <table class="table table-modern table-hover mb-0">
+                        <thead class="thead-light">
                             <tr>
-                                <th>ID</th>
-                                <th>Kích thước</th>
+                                <th>Size</th>
                                 <th>Màu sắc</th>
                                 <th>Giá gốc</th>
                                 <th>Giá sale</th>
-                                <th>Giá hiệu lực</th>
                                 <th>Số lượng</th>
-                                <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($variants as $variant)
-                                <tr>
-                                    <td>{{ $variant->id }}</td>
-                                    <td>
-                                        <span class="badge bg-info">{{ $variant->size->size ?? 'N/A' }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary">{{ $variant->color->name_color ?? 'N/A' }}</span>
-                                    </td>
-                                    <td>{{ number_format($variant->price) }}đ</td>
-                                    <td>
-                                        @if ($variant->price_sale)
-                                            <span class="text-danger fw-bold">{{ number_format($variant->price_sale) }}đ</span>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <strong class="text-success">{{ number_format($variant->effective_price) }}đ</strong>
-                                    </td>
-                                    <td>
-                                        @if ($variant->quantity > 0)
-                                            <span class="badge bg-success">{{ $variant->quantity }}</span>
-                                        @else
-                                            <span class="badge bg-danger">Hết hàng</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($variant->quantity > 0)
-                                            <span class="badge bg-success">Có sẵn</span>
-                                        @else
-                                            <span class="badge bg-warning">Hết hàng</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('product-variants.edit', [$product->id, $variant->id]) }}"
-                                               class="btn btn-sm btn-warning" title="Sửa biến thể">
-                                                <i class="fas fa-edit"></i> Sửa
-                                            </a>
-                                            <form method="POST"
-                                                  action="{{ route('product-variants.destroy', [$product->id, $variant->id]) }}"
-                                                  style="display: inline;"
-                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa biến thể này?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa biến thể">
-                                                    <i class="fas fa-trash"></i> Xóa
-                                                </button>
-                                            </form>
+                        @foreach($variants as $variant)
+                            <tr>
+                                <td>
+                                    @if($variant->size)
+                                        {{ $variant->size->size ?? 'N/A' }}
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($variant->color)
+                                        {{ $variant->color->name_color ?? 'N/A' }}
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="price-modern">{{ number_format($variant->price) }}đ</span>
+                                </td>
+                                <td>
+                                    @if($variant->price_sale && $variant->price_sale > 0)
+                                        <span class="price-sale-modern">{{ number_format($variant->price_sale) }}đ</span>
+                                        <div class="discount-badge">
+                                            -{{ round((($variant->price - $variant->price_sale) / $variant->price) * 100) }}%
                                         </div>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="quantity-modern">{{ $variant->quantity }}</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ route('product-variants.edit', [$product->id, $variant->id]) }}"
+                                           class="btn btn-sm action-btn-warning" title="Sửa biến thể">
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </a>
+                                        <form method="POST"
+                                              action="{{ route('product-variants.destroy', [$product->id, $variant->id]) }}"
+                                              style="display: inline;"
+                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa biến thể này?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm action-btn-danger" title="Xóa biến thể">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -177,15 +174,15 @@
             {{ $variants->links() }}
         </div>
     @else
-        <div class="card">
+        <div class="card modern-card">
             <div class="card-body text-center py-5">
                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
                 <h5>Chưa có biến thể nào</h5>
                 <p class="text-muted">Hãy thêm biến thể để khách hàng có thể chọn size và màu sắc.</p>
-                <a href="{{ route('product-variants.create', $product->id) }}" class="btn btn-primary me-2">
+                <a href="{{ route('product-variants.create', $product->id) }}" class="btn btn-modern btn-primary mr-2">
                     <i class="fas fa-plus"></i> Thêm biến thể đầu tiên
                 </a>
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bulkCreateModal">
+                <button class="btn btn-modern btn-success" data-bs-toggle="modal" data-bs-target="#bulkCreateModal">
                     <i class="fas fa-magic"></i> Tạo tất cả biến thể
                 </button>
             </div>
@@ -193,33 +190,38 @@
     @endif
 
     <!-- Bulk Create Modal -->
-    <div class="modal fade" id="bulkCreateModal" tabindex="-1">
-        <div class="modal-dialog">
+    <div class="modal fade modern-modal" id="bulkCreateModal" tabindex="-1" role="dialog" aria-labelledby="bulkCreateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="POST" action="{{ route('product-variants.bulk-create', $product->id) }}">
                     @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title">Tạo tất cả biến thể</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal-header modern-modal-header">
+                        <h5 class="modal-title modern-modal-title" id="bulkCreateModalLabel">
+                            <i class="fas fa-magic me-2"></i>
+                            Tạo tất cả biến thể
+                        </h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <p class="text-muted">Tạo biến thể cho tất cả combinations của size và màu có trong hệ thống với cùng giá và số lượng.</p>
 
-                        <div class="mb-3">
-                            <label for="bulk_price" class="form-label">Giá cơ bản <span class="text-danger">*</span></label>
-                            <input type="number" name="price" id="bulk_price" class="form-control"
+                        <div class="form-group-modern">
+                            <label for="bulk_price" class="form-label-modern">Giá cơ bản <span class="text-danger">*</span></label>
+                            <input type="number" name="price" id="bulk_price" class="form-control form-control-modern"
                                    min="0" step="1000" required placeholder="VD: 150000">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="bulk_quantity" class="form-label">Số lượng <span class="text-danger">*</span></label>
-                            <input type="number" name="quantity" id="bulk_quantity" class="form-control"
+                        <div class="form-group-modern">
+                            <label for="bulk_quantity" class="form-label-modern">Số lượng <span class="text-danger">*</span></label>
+                            <input type="number" name="quantity" id="bulk_quantity" class="form-control form-control-modern"
                                    min="0" required placeholder="VD: 20">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="bulk_price_sale" class="form-label">Giá sale (không bắt buộc)</label>
-                            <input type="number" name="price_sale" id="bulk_price_sale" class="form-control"
+                        <div class="form-group-modern">
+                            <label for="bulk_price_sale" class="form-label-modern">Giá sale (không bắt buộc)</label>
+                            <input type="number" name="price_sale" id="bulk_price_sale" class="form-control form-control-modern"
                                    min="0" step="1000" placeholder="VD: 120000">
                         </div>
 
@@ -227,9 +229,9 @@
                             <small><i class="fas fa-info-circle"></i> Chỉ tạo các biến thể chưa tồn tại. Biến thể đã có sẽ không bị thay đổi.</small>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-success">
+                    <div class="modal-footer form-actions-modern">
+                        <button type="button" class="btn btn-modern btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-modern btn-success">
                             <i class="fas fa-magic"></i> Tạo tất cả
                         </button>
                     </div>
@@ -237,7 +239,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('scripts')

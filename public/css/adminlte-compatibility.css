@@ -1,0 +1,140 @@
+/* AdminLTE Compatibility Overrides */
+.main-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    z-index: 1000 !important;
+    width: 250px !important;
+}
+
+.content-wrapper {
+    margin-left: 250px !important;
+    transition: margin-left 0.3s ease !important;
+    min-height: 100vh !important;
+}
+
+.content-wrapper.sidebar-collapsed {
+    margin-left: 0 !important;
+}
+
+/* Force override AdminLTE styles */
+.wrapper .content-wrapper {
+    margin-left: 250px !important;
+    transition: margin-left 0.3s ease !important;
+}
+
+.wrapper .content-wrapper.sidebar-collapsed {
+    margin-left: 0 !important;
+}
+
+/* Ensure main content area has proper spacing */
+.main-content {
+    margin-left: 250px !important;
+    transition: margin-left 0.3s ease !important;
+}
+
+.main-content.sidebar-collapsed {
+    margin-left: 0 !important;
+}
+
+/* ESSENTIAL: Force content to have proper margin */
+.content-wrapper {
+    margin-left: 250px !important;
+    transition: margin-left 0.3s ease !important;
+}
+
+.content-wrapper.sidebar-collapsed {
+    margin-left: 0 !important;
+}
+
+/* Override AdminLTE sidebar-mini class */
+.sidebar-mini .content-wrapper {
+    margin-left: 250px !important;
+}
+
+.sidebar-mini .content-wrapper.sidebar-collapsed {
+    margin-left: 0 !important;
+}
+
+/* Hide Realtime Banner */
+.realtime-banner {
+    display: none !important;
+}
+
+/* Hide all Realtime Updates banners */
+.realtime-banner,
+.realtime-status,
+[class*="realtime"],
+[class*="offline"],
+[class*="online"] {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+
+    .content-wrapper.sidebar-collapsed {
+        margin-left: 0 !important;
+    }
+
+    .main-sidebar {
+        transform: translateX(-100%) !important;
+    }
+
+    .main-sidebar.show {
+        transform: translateX(0) !important;
+    }
+
+    .main-sidebar.collapsed {
+        width: 250px !important;
+        transform: translateX(-100%) !important;
+    }
+
+    .main-sidebar.collapsed.show {
+        transform: translateX(0) !important;
+    }
+}
+
+/* Override AdminLTE default styles */
+.card {
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.btn {
+    border-radius: var(--radius-lg) !important;
+}
+
+.form-control {
+    border-radius: var(--radius-lg) !important;
+    border: 2px solid var(--border-color) !important;
+}
+
+.table {
+    border-radius: var(--radius-xl) !important;
+    overflow: hidden !important;
+}
+
+/* Ensure modern styles take precedence */
+.modern-card {
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.btn-modern {
+    border: none !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.form-control-modern {
+    border: 2px solid var(--border-color) !important;
+    box-shadow: none !important;
+}
+
+.table-modern {
+    border: none !important;
+    box-shadow: var(--shadow-md) !important;
+}

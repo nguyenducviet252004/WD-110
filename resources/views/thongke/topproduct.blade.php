@@ -4,8 +4,16 @@
         @foreach ($topProducts as $product)
             <div class="list-group-item d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <img src="{{ asset('storage/' . $product['image']) }}" alt="{{ $product['product_name'] }}"
-                        class="rounded-circle" style="width: 60px; height: 60px; margin-right: 15px;">
+                    @php
+                        $img = !empty($product['image']) ? $product['image'] : null;
+                    @endphp
+                    <img
+                        src="{{ $img ? asset('storage/' . $img) : asset('assets/images/no-image.png') }}"
+                        alt="{{ $product['product_name'] }}"
+                        class="rounded-circle"
+                        style="width: 60px; height: 60px; margin-right: 15px;"
+                        onerror="this.onerror=null;this.src='{{ asset('assets/images/no-image.png') }}';"
+                    >
                     <div>
                         <h5 class="mb-1">{{ $product['product_name'] }}</h5>
                         <div class="text-muted">

@@ -3,167 +3,231 @@
 @section('title')
     Trang chủ
 @endsection
+
 @section('content_admin')
-    <div class="container text-center mt-5 mb-3">
-        <h2>Trang chủ quản trị viên</h2>
-    </div>
-    <div class="dashboard-stats mt-3">
-        <div class="stat-item">
-            <h2>Tổng Doanh Thu</h2>
-            <p>{{ number_format($totalRevenue, 0, ',', '.') }} VND</p>
-        </div>
-        <div class="stat-item">
-            <h2>Tổng Thành Viên</h2>
-            <p>{{ $totalUsers }} Thành viên</p>
-        </div>
-        <div class="stat-item">
-            <h2>Đã Hoàn Thành</h2>
-            <p>{{ $completedOrders }} Đơn hàng</p>
-        </div>
-        <div class="stat-item">
-            <h2>Chưa Xử Lí </h2>
-            <p>{{ $pendingOrders }} Đơn hàng</p>
-            <a class="btn btn-success" href="{{ route('orders.index') }}">Xử lí ngay</a>
+    <!-- Modern Header -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="m-0">
+                        <i class="fas fa-home me-3"></i>
+                        Trang chủ quản trị viên
+                    </h1>
+                    <nav aria-label="breadcrumb" class="fade-in-up">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active">
+                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
+    <!-- Modern Time Filter -->
+    <div class="container-fluid">
+        <div class="modern-card hover-lift mb-4">
+            <div class="modern-card-header">
+                <h3 class="modern-card-title">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    Chọn khoảng thời gian thống kê
+                </h3>
+            </div>
+            <div class="modern-card-body">
+                <form id="time-filter-form" method="GET" action="{{ route('admin.dashboard') }}" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <div class="form-group-modern">
+                            <label for="start_date" class="form-label-modern">
+                                <i class="fas fa-calendar-day me-2"></i>Từ ngày:
+                            </label>
+                            <input type="date" id="start_date" name="start_date" class="form-control form-control-modern" value="{{ $startDate ? $startDate->format('Y-m-d') : '' }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group-modern">
+                            <label for="end_date" class="form-label-modern">
+                                <i class="fas fa-calendar-day me-2"></i>Đến ngày:
+                            </label>
+                            <input type="date" id="end_date" name="end_date" class="form-control form-control-modern" value="{{ $endDate ? $endDate->format('Y-m-d') : '' }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-modern btn-primary w-100">
+                            <i class="fas fa-filter me-2"></i>Lọc dữ liệu
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-modern btn-secondary w-100">
+                            <i class="fas fa-sync-alt me-2"></i>Làm mới
+                        </a>
+                    </div>
+                </form>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="alert alert-info modern-alert mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Hướng dẫn:</strong> Chọn khoảng thời gian cụ thể để xem thống kê chi tiết. Dữ liệu sẽ được cập nhật tự động khi chuyển tab.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Time Info -->
+    <div class="container-fluid mt-3">
+        <div class="alert alert-info modern-alert">
+            <i class="fas fa-calendar-alt me-2"></i>
+            <strong>Khoảng thời gian đã chọn:</strong>
+            @if(isset($formattedStartDate) && isset($formattedEndDate))
+                Từ {{ $formattedStartDate }} đến {{ $formattedEndDate }}
+            @else
+                Tháng {{ now()->format('m/Y') }}
+            @endif
+        </div>
+    </div>
+
+    <!-- Thống kê tổng quan -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="modern-card hover-lift">
+                <div class="modern-card-body text-center">
+                    <div class="stat-icon-modern bg-primary">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3 class="stat-value-modern">{{ number_format($totalRevenue, 0, ',', '.') }} VND</h3>
+                    <p class="stat-label-modern">Tổng Doanh Thu</p>
+                    @if(isset($revenueChange))
+                        <div class="stat-change-modern {{ $revenueChange >= 0 ? 'positive' : 'negative' }}">
+                            <i class="fas fa-arrow-{{ $revenueChange >= 0 ? 'up' : 'down' }}"></i>
+                            {{ number_format(abs($revenueChange), 1) }}%
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{ $totalUsers }}</h3>
+                    <p>Tổng Thành Viên</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <span class="small-box-footer">Tất cả thời gian</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>{{ $completedOrders }}</h3>
+                    <p>Đã Hoàn Thành</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                @if(isset($ordersChange))
+                    <span class="small-box-footer">
+                        <i class="fas fa-arrow-{{ $ordersChange >= 0 ? 'up' : 'down' }}"></i>
+                        {{ number_format(abs($ordersChange), 1) }}%
+                    </span>
+                @endif
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>{{ $pendingOrders }}</h3>
+                    <p>Chưa Xử Lí</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <a class="btn btn-success mt-2" href="{{ route('orders.index') }}">
+                    <i class="fas fa-clipboard-check"></i> Xử lí ngay
+                </a>
+                <span class="small-box-footer">Tất cả thời gian</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Menu -->
-    <div class="container mt-4">
-        <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="account-tab" data-bs-toggle="tab" data-bs-target="#account"
-                    type="button" role="tab">
-                    Tài khoản
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button"
-                    role="tab">
-                    Doanh thu - Dơn hàng
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="top-products-tab" data-bs-toggle="tab" data-bs-target="#top-products"
-                    type="button" role="tab">
-                    Sản phẩm bán chạy
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="tonkho-tab" data-bs-toggle="tab" data-bs-target="#tonkho" type="button"
-                    role="tab">
-                    Tồn kho - Sắp hết
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="voucher-tab" data-bs-toggle="tab" data-bs-target="#voucher" type="button"
-                    role="tab">
-                    Voucher
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="tiledon-tab" data-bs-toggle="tab" data-bs-target="#tiledon" type="button"
-                    role="tab">
-                    Tỉ lệ đơn
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="khachhang-tab" data-bs-toggle="tab" data-bs-target="#khachhang" type="button"
-                    role="tab">
-                    Khách hàng
-                </button>
-            </li>
-        </ul>
-
-        <div class="mt-5 mb-5">
-            <form id="filter-stats-form" action="" method="GET" class="row g-3">
-                <div class="col-md-3">
-                    <label for="start-date" class="form-label">Từ ngày:</label>
-                    <input type="date" id="start-date" name="start_date" class="form-control"
-                        value="{{ request('start_date') }}">
+    <div class="container-fluid mt-4">
+        <div class="card card-outline card-primary">
+            <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="account-tab" data-bs-toggle="tab" href="#account" role="tab">Tài khoản</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab">Doanh thu - Đơn hàng</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="top-products-tab" data-bs-toggle="tab" href="#top-products" role="tab">Sản phẩm bán chạy</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="tonkho-tab" data-bs-toggle="tab" href="#tonkho" role="tab">Tồn kho - Sắp hết</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="voucher-tab" data-bs-toggle="tab" href="#voucher" role="tab">Voucher</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="tiledon-tab" data-bs-toggle="tab" href="#tiledon" role="tab">Tỉ lệ đơn</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="khachhang-tab" data-bs-toggle="tab" href="#khachhang" role="tab">Khách hàng</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content mt-4">
+                    <div class="tab-pane fade show active" id="account" role="tabpanel">
+                        <div id="account-content" data-url="{{ route('thongke.account') }}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="orders" role="tabpanel">
+                        <div id="orders-content" data-url="{{ route('thongke.orders') }}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="top-products" role="tabpanel">
+                        <div id="top-products-content" data-url="{{ route('thongke.topproduct') }}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tonkho" role="tabpanel">
+                        <div id="tonkho-content" data-url="{{ route('thongke.tonkho') }}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="voucher" role="tabpanel">
+                        <div id="voucher-content" data-url="{{ route('thongke.voucher') }}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="tiledon" role="tabpanel">
+                        <div id="tiledon-content" data-url="{{ route('thongke.tiledon') }}"></div>
+                    </div>
+                    <div class="tab-pane fade" id="khachhang" role="tabpanel">
+                        <div id="khachhang-content" data-url="{{ route('thongke.khachhang') }}"></div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label for="end-date" class="form-label">Đến ngày:</label>
-                    <input type="date" id="end-date" name="end_date" class="form-control"
-                        value="{{ request('end_date') }}">
-                </div>
-                <!-- Input ẩn để lưu URL hiện tại -->
-                <input type="hidden" id="current-url" name="current_url" value="">
-                <div class="col-md-3 align-self-end">
-                    <button type="submit" class="btn btn-primary">Lọc</button>
-                </div>
-            </form>
-        </div>
-        <!-- Nội dung của từng tab -->
-        <div class="tab-content mt-4">
-            <div class="tab-pane fade show active" id="account" role="tabpanel">
-                <div id="account-content" data-url="{{ route('thongke.account') }}"></div>
-            </div>
-            <div class="tab-pane fade" id="orders" role="tabpanel">
-                <div id="orders-content" data-url="{{ route('thongke.orders') }}"></div>
-            </div>
-            <div class="tab-pane fade" id="top-products" role="tabpanel">
-                <div id="top-products-content" data-url="{{ route('thongke.topproduct') }}"></div>
-            </div>
-            <div class="tab-pane fade" id="tonkho" role="tabpanel">
-                <div id="tonkho-content" data-url="{{ route('thongke.tonkho') }}"></div>
-            </div>
-            <div class="tab-pane fade" id="voucher" role="tabpanel">
-                <div id="voucher-content" data-url="{{ route('thongke.voucher') }}"></div>
-            </div>
-            <div class="tab-pane fade" id="tiledon" role="tabpanel">
-                <div id="tiledon-content" data-url="{{ route('thongke.tiledon') }}"></div>
-            </div>
-            <div class="tab-pane fade" id="khachhang" role="tabpanel">
-                <div id="khachhang-content" data-url="{{ route('thongke.khachhang') }}"></div>
             </div>
         </div>
     </div>
 
-    <style>
-        .dashboard-stats {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
+    <!-- Sử dụng style của AdminLTE, không cần custom style riêng cho dashboard -->
 
-        .stat-item {
-            flex: 1;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-item h2 {
-            margin-bottom: 10px;
-            font-size: 20px;
-            color: #333;
-        }
-
-        .stat-item p {
-            font-size: 18px;
-            color: #555;
-            font-weight: bold;
-        }
-    </style>
-<script>
+    <script>
         // Hàm tải dữ liệu qua AJAX
         function loadTabContent(tabId, url) {
             const contentDiv = document.getElementById(`${tabId}-content`);
             if (!contentDiv || !url) return;
 
-            // Lấy giá trị từ đầu tháng đến hôm nay
-            const today = new Date();
-            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-            const formattedStartDate = startOfMonth.toISOString().split('T')[0];
-            const formattedEndDate = today.toISOString().split('T')[0];
+            // Lấy giá trị từ form chính
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
 
-            // Gửi request với start_date và end_date
-            const params = new URLSearchParams({
-                start_date: formattedStartDate,
-                end_date: formattedEndDate,
-            });
+            const params = new URLSearchParams();
+
+            // Chỉ sử dụng ngày cụ thể
+            if (startDateInput && startDateInput.value && endDateInput && endDateInput.value) {
+                params.append('start_date', startDateInput.value);
+                params.append('end_date', endDateInput.value);
+            }
 
             contentDiv.innerHTML = '<div class="text-center">Đang tải dữ liệu...</div>';
 
@@ -181,7 +245,8 @@
                     console.error('Error loading tab content:', error);
                 });
         }
-// Lắng nghe sự kiện tab thay đổi
+
+        // Lắng nghe sự kiện tab thay đổi
         document.querySelectorAll('.nav-link').forEach(tab => {
             tab.addEventListener('shown.bs.tab', function(event) {
                 const tabId = event.target.dataset.bsTarget.replace('#', '');
@@ -196,61 +261,25 @@
             const tabId = activeTab.dataset.bsTarget.replace('#', '');
             const url = document.getElementById(`${tabId}-content`).dataset.url;
             loadTabContent(tabId, url);
-        });
 
-        // Cập nhật giá trị `current_url` khi tải trang ban đầu
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCurrentUrl();
-
-            document.querySelectorAll('.nav-link').forEach(tab => {
-                tab.addEventListener('shown.bs.tab', function(event) {
-                    updateCurrentUrl();
-                });
-            });
-
-            function updateCurrentUrl() {
+            // Tự động cập nhật tab khi form chính thay đổi
+            document.getElementById('start_date')?.addEventListener('change', function() {
                 const activeTab = document.querySelector('.nav-link.active');
                 const tabId = activeTab.dataset.bsTarget.replace('#', '');
                 const url = document.getElementById(`${tabId}-content`).dataset.url;
-                document.getElementById('current-url').value = url;
-            }
+                loadTabContent(tabId, url);
+            });
 
-            const startDateInput = document.getElementById('start-date');
-            const endDateInput = document.getElementById('end-date');
-
-            const firstDayOfMonth = new Date();
-            firstDayOfMonth.setDate(1);
-            const formattedStartDate = firstDayOfMonth.toISOString().split('T')[0];
-
-            const today = new Date();
-            const formattedEndDate = today.toISOString().split('T')[0];
-
-            startDateInput.value = formattedStartDate;
-            endDateInput.value = formattedEndDate;
+            document.getElementById('end_date')?.addEventListener('change', function() {
+                const activeTab = document.querySelector('.nav-link.active');
+                const tabId = activeTab.dataset.bsTarget.replace('#', '');
+                const url = document.getElementById(`${tabId}-content`).dataset.url;
+                loadTabContent(tabId, url);
+            });
         });
-// Lọc dữ liệu khi submit form
-        document.getElementById('filter-stats-form').addEventListener('submit', function(event) {
-            event.preventDefault();
 
-            const form = event.target;
-            const url = document.getElementById('current-url').value;
-            const formData = new FormData(form);
 
-            fetch(url + '?' + new URLSearchParams(formData).toString(), {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                })
-                .then(response => response.text())
-                .then(data => {
-                    const activeTab = document.querySelector('.nav-link.active');
-                    const tabId = activeTab.dataset.bsTarget.replace('#', '');
-                    const contentDiv = document.getElementById(`${tabId}-content`);
-                    contentDiv.innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
+
+
     </script>
 @endsection
