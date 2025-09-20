@@ -15,9 +15,11 @@ class Order extends Model
         'product_id',
         'quantity',
         'total_amount',
+        'shipping_fee',
         'payment_method',
         'ship_method',
         'ship_address_id',
+        'sender_name', // Thông tin người gửi
         'status',
         'voucher_id',
         'discount_value'
@@ -38,7 +40,7 @@ class Order extends Model
 
     public function shipAddress()
     {
-        return $this->belongsTo(Ship_address::class);
+        return $this->belongsTo(Ship_address::class, 'ship_address_id', 'id');
     }
 
     public function orderDetails()
@@ -59,6 +61,33 @@ class Order extends Model
     public function payment()
     {
         return $this->hasOne(Payment::class, 'order_id', 'id');
+    }
+
+    public function getShippingAddressInfo()
+    {
+        if (!$this->shipAddress) {
+            return [
+                'recipient_name' => 'Chưa cập nhật',
+                'phone_number' => 'Chưa cập nhật',
+                'ship_address' => 'Địa chỉ chưa cập nhật',
+                'full_address' => 'Thông tin địa chỉ không đầy đủ',
+            ];
+        }
+
+        return [
+            'recipient_name' => $this->shipAddress->recipient_name ?? 'Chưa cập nhật',
+            'phone_number' => $this->shipAddress->phone_number ?? 'Chưa cập nhật',
+            'ship_address' => $this->shipAddress->ship_address ?? 'Địa chỉ chưa cập nhật',
+            'full_address' => trim($this->shipAddress->ship_address ?? 'Thông tin địa chỉ không đầy đủ')
+        ];
+    }
+
+    public function hasCompleteShippingAddress()
+    {
+        return $this->shipAddress &&
+                !empty($this->shipAddress->recipient_name) &&
+                !empty($this->shipAddress->phone_number) &&
+                !empty($this->shipAddress->ship_address);
     }
 
 }

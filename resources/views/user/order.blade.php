@@ -123,8 +123,8 @@
                     <!-- Display Order Total -->
                     <div class="card-footer bg-light d-flex justify-content-between align-items-center py-3">
                         <div>
-                            <h6 class="m-0">Thành tiền: <span
-                                    class="fw-bold text-danger">₫{{ number_format($order->total_amount ?? 0) }}</span></h6>
+                            <h6 class="m-0">Phí vận chuyển: <span class="fw-bold text-primary">₫{{ number_format($order->shipping_fee ?? 40000) }}</span></h6>
+                            <h6 class="m-0">Thành tiền: <span class="fw-bold text-danger">₫{{ number_format($order->total_amount ?? 0) }}</span></h6>
                             <h6 class="mt-1">Đã giảm giá:
                                 <span class="text-warning">
                                     {{ number_format($order->discount_value ?? 0) }} VNĐ
