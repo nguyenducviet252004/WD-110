@@ -19,7 +19,9 @@ use App\Http\Controllers\QuanliReviewController;
 use App\Http\Controllers\ThongkeController;
 use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\UservoucherController;
+
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\ChatAdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +37,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// Admin chat page
+Route::controller(ChatAdminController::class)->middleware(['token.auth', 'admin'])->group(function () {
+    Route::get('/admin/chat', 'index')->name('admin.chat');
+});
+
+Route::get('/test', function () {
+    return view('test');
 });
 
 // Các route cho Account
@@ -66,6 +77,8 @@ Route::controller(AccountController::class)->group(function () {
 // Route cho Admin
 Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard',  'admin')->name('admin.dashboard');
+    Route::get('/admin/dashboard-test',  'admin')->name('admin.dashboard.test');
+
     // Đổi mật khẩu
     Route::get('/admin/change-password', 'changepass')->name('admin.changepass.form');
     Route::post('/admin/change-password', 'changepass_')->name('admin.password.change');
@@ -115,6 +128,8 @@ Route::controller(AdminController::class)->middleware(['token.auth', 'admin'])->
     Route::get('/thongke/khachhang', [ThongkeController::class, 'khachhang'])->name('thongke.khachhang');
     Route::get('/thongke/voucher', [ThongkeController::class, 'voucher'])->name('thongke.voucher');
     Route::get('/thongke/tiledon', [ThongkeController::class, 'tiledon'])->name('thongke.tiledon');
+
+
 });
 
 // Route cho User
@@ -138,6 +153,8 @@ Route::controller(UserController::class)->middleware(['token.auth', 'user'])->gr
     Route::patch('/orders/{orderId}/done',  [UserOrderController::class, 'done'])->name('done');
 
     Route::post('user/review/{order}', [ReviewController::class, 'store'])->name('review.store');
+
+
 });
 
 
