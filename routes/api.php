@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ShipAddressController;
 use App\Http\Controllers\Api\TopSellController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ChatController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +53,8 @@ Route::prefix('orders')->group(function () {
     Route::get('/{orderId}/status', [OrderStatusController::class, 'getStatus'])->middleware('auth:sanctum');
     Route::patch('/{orderId}/status', [OrderStatusController::class, 'updateStatus'])->middleware('auth:sanctum');
 });
+
+
 Route::apiResource('vouchers', VoucherController::class)->middleware('auth:sanctum');
 
 Route::get('/address',[AccountController::class, 'address'])->name('address')->middleware('auth:sanctum');
@@ -62,6 +65,7 @@ Route::delete('/cart/{user_id}/clear', [CartController::class, 'clearCart'])->mi
 // Logo Banner routes
 Route::get('/logobanner/{id}', [LogoBannerController::class, 'show']);
 Route::get('/logobanner', [LogoBannerController::class, 'index']);
+
 Route::put('/cart/{cartId}/update/{productId}', [CartController::class, 'updateCartItem']);
 
 Route::get('categories/{category}/products', [ProductController::class, 'getProductsByCategory']);
@@ -96,3 +100,13 @@ Route::get('payment/status/{orderId}', [PaymentController::class, 'checkPaymentS
 
 
 Route::post('password/email', [PassWordController::class, 'sendResetLink']);
+
+// Chat routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/chat/messages', [ChatController::class, 'listForCurrentUser']);
+    Route::post('/chat/messages', [ChatController::class, 'sendByCurrentUser']);
+    Route::get('/admin/chat/{userId}/messages', [ChatController::class, 'listForAdmin']);
+    Route::post('/admin/chat/{userId}/messages', [ChatController::class, 'sendByAdmin']);
+    Route::get('/admin/chat/conversations/unread', [ChatController::class, 'adminConversations']);
+    Route::post('/admin/chat/{userId}/mark-read', [ChatController::class, 'markReadForAdmin']);
+});

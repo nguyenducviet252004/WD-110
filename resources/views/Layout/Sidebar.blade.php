@@ -95,6 +95,12 @@
                         <span class="menu-title">Hồ sơ</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.chat') ? 'active' : '' }}" href="{{ route('admin.chat') }}">
+                        <i class="fas fa-comments menu-icon"></i>
+                        <span class="menu-title">Chat</span>
+                    </a>
+                </li>
             </div>
             <li class="nav-item logout-item" style="margin-top: auto;">
                 <form action="{{ route('logout') }}" method="POST" style="display:inline;">
